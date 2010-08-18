@@ -1,0 +1,57 @@
+# dcReloadedFormExtraPlugin
+
+The `dcReloadedFormExtraPlugin` adds some useful extra widgets, validators, modules,
+etc.
+
+## Installation
+
+  * svn installation:
+
+        $ svn co http://svn.symfony-project.com/plugins/dcReloadedFormExtraPlugin/trunk plugins/dcReloadedFormExtraPlugin
+
+  * Enable the plugin in your proyect configuration
+
+        [php]
+        // in config/ProjectConfiguration.class.php add:
+        $this->enablePlugin("dcReloadedFormExtraPlugin");
+
+  * clear the cache
+
+        $ ./symfony cc
+
+## Widgets
+
+### pmWidgetFormPropelChoiceOrCreate
+
+The `pmWidgetFormPropelChoiceOrCreate` extends the functionality provided by
+the `sfWidgetFormPropelChoice`, adding a link that opens a new window, allowing
+the user to create an object of the widget's model. Then, that object is
+available for being selected.
+
+##### Usage
+
+Use it as you use the `sfWidgetFormPropelChoice`, except for the following new
+parameters:
+
+  * **url**
+  * **new_label**: The link's label. Defaults to *New*
+  * **ws_url**
+
+Enable the `dc_ajax` module.
+
+**Note**: [jQuery](http://jquery.com) is required.
+
+### pmWidgetFormDoctrineChoiceOrCreate
+
+The `pmWidgetFormDoctrineChoiceOrCreate` is the doctrine version of the
+`pmWidgetFormPropelChoiceOrCreate`. So, use it as you use the
+`pmWidgetFormPropelChoiceOrCreate`.
+
+## For developers
+
+  * If you need to create a module for ajax actions use the `dc_ajax` module.
+
+## TO DO
+
+  * Add more of the sfWidgetFormPropelChoice parameters to the getPropelChoices
+    action (and getDoctrineChoices).

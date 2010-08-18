@@ -1,0 +1,7 @@
+pm_widget_form_propel_choice_or_create:
+  url:   /pm_widget_form_propel_choice_or_create
+  param: { module: dc_ajax, action: getPropelChoices }
+
+pm_widget_form_doctrine_choice_or_create:
+  url:   /pm_widget_form_doctrine_choice_or_create
+  param: { module: dc_ajax, action: getDoctrineChoices }
