@@ -47,11 +47,64 @@ The `pmWidgetFormDoctrineChoiceOrCreate` is the doctrine version of the
 `pmWidgetFormPropelChoiceOrCreate`. So, use it as you use the
 `pmWidgetFormPropelChoiceOrCreate`.
 
+### mtWidgetFormPlain
+
+The `mtWidgetFormPlain` provides a way for showing plain values in the forms.
+
+##### Usage
+
+    [php]
+    $this->widgetSchema["some_field"] = new mtWidgetFormPlain(array("add_hidden_input" => true));
+    
+For more options, take a look at the widget's doc comments.
+
+### dcWidgetFormAjaxDependence
+
+This widget is used with select widgets filtering values depending on the
+selection made in observed widget. Supose widget A11 observing A1 widget
+changes, that observes A widget changes.
+In this case, you can have the following scenarios:
+ * The form will save A, A1 and A11 values
+ * The form will only sava A11 values (A and A1 will be used only for filtering purpose)
+
+For the first case, just use the widget as it is. But for the second case, you
+will need to do some trick inside the form implementation:
+  if (!$this->getObject()->isNew())
+  {
+      $a11Object=$this->getObject()->getA11();
+      $this->setDefault('a1_id',$a11Object->getA1Id());
+      $this->setDefault('a_id',$b111->getB11()->getA1()->getAId());
+  }
+
+##### Usage
+
+    [php]
+    $w = new sfWidgetFormInput();
+    $this->widgetSchema["some_field"] = new dcWidgetFormAjaxDependence(array(
+      "dependant_widget" => $w,
+      "observe_widget_id" => "some_form_some_field",
+      "get_observed_value_callback" => array(get_class($this), "getValueForUpdate")
+    ));
+    
+And then you must implement the getValueForUpdate method.
+
+### dcWidgetFormPropelAjaxDependence
+
+Same as dcWidgetFormAjaxDependence, except that retrieves objects from Propel
+classes.
+
 ## For developers
 
-  * If you need to create a module for ajax actions use the `dc_ajax` module.
+  * If you need to create ajax actions use the `dc_ajax` module.
 
-## TO DO
+## TODO
+
+### pmWidgetFormPropelChoiceOrCreate
 
   * Add more of the sfWidgetFormPropelChoice parameters to the getPropelChoices
     action (and getDoctrineChoices).
+    
+### dcWidgetFormAjaxDependence y dcWidgetFormPropelAjaxDependence
+
+  * Port to jQuery. Once this is done, delete js/prototype.js, that is added
+    JUST for this widget.

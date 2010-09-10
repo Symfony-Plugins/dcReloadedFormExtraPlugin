@@ -77,12 +77,12 @@ class dcWidgetFormAjaxDependence extends sfWidgetForm
   /*
    * Required Javascripts for this widget 
    */
-  public function getJavascripts()
+  public function getJavaScripts()
   {
     /* prototype is required... :(
      * TODO: reimplement form jQuery
      */
-    return array_merge(parent::getJavascripts(),array('/dcReloadedFormExtraPlugin/js/prototype.js', '/dcReloadedFormExtraPlugin/js/ajax_dependence.js'), $this->getDependantWidgetJavascripts());
+    return array_merge(parent::getJavaScripts(),array('/dcReloadedFormExtraPlugin/js/prototype.js', '/dcReloadedFormExtraPlugin/js/ajax_dependence.js'), $this->getDependantWidgetJavaScripts());
   }
 
   /**
@@ -90,12 +90,12 @@ class dcWidgetFormAjaxDependence extends sfWidgetForm
    *
    * @return array
    */
-  public function getDependantWidgetJavascripts()
+  public function getDependantWidgetJavaScripts()
   {
     $dependant_widget = $this->getOption('dependant_widget');
-    if (is_callable(array($dependant_widget, 'getJavascripts')))
+    if (is_callable(array($dependant_widget, 'getJavaScripts')))
     {
-      return $dependant_widget->getJavascripts();
+      return $dependant_widget->getJavaScripts();
     }
     
     return array();

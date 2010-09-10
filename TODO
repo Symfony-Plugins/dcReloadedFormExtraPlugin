@@ -1,7 +1,0 @@
-# TODO
-
-## dcWidgetFormAjaxDependence y dcWidgetFormPropelAjaxDependence
-
-* Portar a jQuery: una vez hecho ésto, eliminar el script js/prototype.js, ya
-  que se agrega para el uso UNICAMENTE para el uso de este widget (por eso no
-  se usa como dependencia).
