@@ -93,6 +93,42 @@ And then you must implement the getValueForUpdate method.
 Same as dcWidgetFormAjaxDependence, except that retrieves objects from Propel
 classes.
 
+### mtWidgetFormPlain
+
+The `mtWidgetFormPlain` displays a plain value.
+
+##### Usage 
+
+    [php]
+    $this->setWidget("some_field", new mtWidgetFormPlain());
+
+### dcWidgetFormChangeForCredentials
+
+The `dcWidgetFormChangeForCredentials` displays one of two widgets depending on
+user's credentials.
+
+##### Usage
+
+    [php]
+    $this->setWidget("some_field", new dcWidgetFormChangeForCredentials(new array(
+      "credentials" => array(array("admin", "some_credential")),
+      "widget_without_credentials" => new mtWidgetFormPlain(),
+      "widget_with_credentials" => new sfWidgetFormInput()
+    )));
+
+### mtWidgetFormPartial
+
+The `mtWidgetFormPartial` displays a partial.
+
+##### Usage
+
+    [php]
+    $this->setWidget("partial", new mtWidgetFormPartial(array(
+      "module" => "some_module",
+      "partial" => "some_partial",
+      "form" => $this
+    ));
+
 ## For developers
 
   * If you need to create ajax actions use the `dc_ajax` module.

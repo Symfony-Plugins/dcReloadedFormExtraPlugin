@@ -82,12 +82,12 @@ EOF
 
   private function getButtonWithoutCredentials($name)
   {
-    return $this->canChange()?sprintf('<a href="#" onclick="%s">%s</a>', 'WidgetChangeForCredentials.toAdvancedMode(\''.$this->generateId($name).'\'); return false;', $this->getOption('label_change_widget_with_credentials')):'';
+    return $this->canChange()?sprintf('<a href="#" onclick="%s">%s</a>', 'WidgetChangeForCredentials.toAdvancedMode(\''.$this->generateId($name).'\'); return false;', $this->translate($this->getOption('label_change_widget_with_credentials'))):'';
   }
 
   private function getButtonWithCredentials($name)
   {
-    return sprintf('<a href="#" onclick="%s">%s</a>', 'WidgetChangeForCredentials.toNormalMode(\''.$this->generateId($name).'\'); return false;', $this->getOption('label_change_widget_without_credentials'));
+    return sprintf('<a href="#" onclick="%s">%s</a>', 'WidgetChangeForCredentials.toNormalMode(\''.$this->generateId($name).'\'); return false;', $this->translate($this->getOption('label_change_widget_without_credentials')));
   }
 
   private function getWidgetWithoutCredentials($name,$value)
