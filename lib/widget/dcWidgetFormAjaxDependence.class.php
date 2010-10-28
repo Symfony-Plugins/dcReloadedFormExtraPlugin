@@ -62,7 +62,7 @@ class dcWidgetFormAjaxDependence extends sfWidgetForm
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('Asset','Tag','JavascriptBase','Url'));
     
     parent::configure($options, $attributes );
-    $this->addRequiredOption('widget');
+    $this->addRequiredOption('dependant_widget');
     $this->addRequiredOption('observe_widget_id');
     $this->addOption('observe_widget_is_boolean',false);
     $this->addOption('observe_callback',url_for('@dc_widget_form_ajax_dependence_changed'));
