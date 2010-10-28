@@ -52,4 +52,18 @@ class dc_ajaxActions extends sfActions
     
     return sfView::NONE;
   }
+
+  public function executeDcWidgetFormJQueryDependenceChanged(sfWebRequest $request)
+  {
+    if ($request->isMethod('post'))
+    {
+
+      $widget_from_request = $request->getParameter('widget');
+      $widget = dcWidgetFormJQueryDependence::decodeWidget($widget_from_request);
+      $observed_values = $request->getParameter('observed_values');
+      $this->getResponse()->setContent($widget->renderAfterUpdate($observed_values));
+    }
+
+    return sfView::NONE;
+  }
 }

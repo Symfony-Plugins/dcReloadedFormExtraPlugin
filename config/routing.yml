@@ -9,3 +9,7 @@ pm_widget_form_doctrine_choice_or_create:
 dc_widget_form_ajax_dependence_changed:
   url:   /dc_widget_form_ajax_dependence_changed
   param: { module: dc_ajax, action: dcWidgetFormAjaxDependenceChanged }
+
+dc_widget_form_jquery_dependence_changed:
+  url:  /dc_widget_form_jquery_dependence_changed
+  param: { module: dc_ajax, action: dcWidgetFormJQueryDependenceChanged }
