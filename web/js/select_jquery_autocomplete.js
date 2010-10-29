@@ -74,7 +74,7 @@
 					  }
 					}
 				})
-				.addClass( "ui-widget ui-widget-content ui-corner-left" );
+				.addClass("ui-widget ui-widget-content ui-corner-left");
 
 			input.data("autocomplete")._renderItem = function(ul, item)
 			{
