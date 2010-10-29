@@ -129,6 +129,18 @@ The `mtWidgetFormPartial` displays a partial.
       "form" => $this
     ));
 
+
+### pmWidgetFormSelectJQueryAutocomplete
+
+The `pmWidgetFormSelectJQueryAutocomplete` displays an autocomplete based on a
+<select> tag. This widget is basically a renderer, so it can be used as the
+renderer of a sfWidgetFormChoice, sfWidgetFormPropelChoice, etc.
+
+##### Usage
+
+    [php]
+    $this->getWidget("city_id")->setOption("renderer_class", "pmWidgetFormSelectJQueryAutocomplete");
+
 ## For developers
 
   * If you need to create ajax actions use the `dc_ajax` module.
