@@ -141,6 +141,33 @@ renderer of a sfWidgetFormChoice, sfWidgetFormPropelChoice, etc.
     [php]
     $this->getWidget("city_id")->setOption("renderer_class", "pmWidgetFormSelectJQueryAutocomplete");
 
+### pmWidgetFormJQuerySearch
+
+The `pmWidgetFormJQuerySearch` displays an input text with search capabilities.
+
+##### Usage
+
+    [php]
+    $this->setWidget("some_field") = new pmWidgetFormJQuerySearch(array(
+      "url" => "@url_that_performs_the_search"
+    ));
+    
+The jquery_search.js provides a javascript class with functions for displaying
+the results. See the example of a pmWidgetFormPropelJQuerySearch.
+
+### pmWidgetFormPropelJQuerySearch
+
+The `pmWidgetFormJQuerySearch` displays an input text with search capabilities
+over propel objects.
+
+##### Usage
+
+    [php]
+    $this->setWidget("some_field_id") = new pmWidgetFormPropelJQuerySearch(array(
+      "model" => "SomeField",
+      "column" => "some_column"
+    ));
+    
 ## For developers
 
   * If you need to create ajax actions use the `dc_ajax` module.

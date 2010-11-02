@@ -13,3 +13,7 @@ dc_widget_form_ajax_dependence_changed:
 dc_widget_form_jquery_dependence_changed:
   url:  /dc_widget_form_jquery_dependence_changed
   param: { module: dc_ajax, action: dcWidgetFormJQueryDependenceChanged }
+
+pm_widget_form_propel_jquery_search:
+  url: /pm_widget_form_propel_jquery_search
+  param: { module: dc_ajax, action: pmWidgetFormPropelJQuerySearch }

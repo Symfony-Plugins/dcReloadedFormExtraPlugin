@@ -66,4 +66,62 @@ class dc_ajaxActions extends sfActions
 
     return sfView::NONE;
   }
+  
+  public function executePmWidgetFormPropelJQuerySearch(sfWebRequest $request)
+  {
+    $this->search = $request->getParameter("search");
+    $this->js_var_name = $request->getParameter("js_var_name");
+    
+    $this->options = unserialize(base64_decode($request->getParameter("serialized_options")));
+    
+    $results = array();
+
+    $class = constant($this->options['model'].'::PEER');
+
+    $criteria = null === $this->options['criteria'] ? new Criteria() : clone $this->options['criteria'];
+    
+    $columns = $this->options['column']; // column is an array or a string
+    
+    if (is_array($columns))
+    {
+      for ($i = 0; $i < count($columns); $i++)
+      { 
+        $column = strtoupper($columns[$i]);
+        if ($i == 0)
+        {
+          $criterion = $criteria->getNewCriterion(constant("$class::$column"), "%".$this->search."%", Criteria::LIKE);
+        }
+        else
+        {
+          $criterion->addOr($criteria->getNewCriterion(constant("$class::$column"), "%".$this->search."%", Criteria::LIKE));
+        }
+      }
+      
+      $criteria->add($criterion);
+    }
+    else
+    {
+      $column = strtoupper($columns);
+      $criteria->add(constant("$class::$column"), "%".$this->search."%", Criteria::LIKE);
+    }
+    
+    if ($order = $this->options['order_by'])
+    {
+      $method = sprintf('add%sOrderByColumn', 0 === strpos(strtoupper($order[1]), 'ASC') ? 'Ascending' : 'Descending');
+      $criteria->$method(call_user_func(array($class, 'translateFieldName'), $order[0], BasePeer::TYPE_PHPNAME, BasePeer::TYPE_COLNAME));
+    }
+    $this->objects = call_user_func(array($class, $this->options['peer_method']), $criteria, $this->options['connection']);
+    
+    $this->methodKey = $this->options['key_method'];
+    if (!method_exists($this->options['model'], $this->methodKey))
+    {
+      throw new RuntimeException(sprintf('Class "%s" must implement a "%s" method to be rendered in a "%s" widget', $this->options['model'], $this->methodKey, "pmWidgetFormPropelJQuerySearch"));
+    }
+
+    $this->methodValue = $this->options['method'];
+    if (!method_exists($this->options['model'], $this->methodValue))
+    {
+      throw new RuntimeException(sprintf('Class "%s" must implement a "%s" method to be rendered in a "%s" widget', $this->options['model'], $this->methodValue, "pmWidgetFormPropelJQuerySearch"));
+    }
+  }
 }
