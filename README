@@ -136,6 +136,8 @@ The `pmWidgetFormSelectJQueryAutocomplete` displays an autocomplete based on a
 <select> tag. This widget is basically a renderer, so it can be used as the
 renderer of a sfWidgetFormChoice, sfWidgetFormPropelChoice, etc.
 
+jquery ui is required.
+
 ##### Usage
 
     [php]
