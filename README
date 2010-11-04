@@ -165,10 +165,32 @@ over propel objects.
 ##### Usage
 
     [php]
-    $this->setWidget("some_field_id") = new pmWidgetFormPropelJQuerySearch(array(
+    $this->setWidget("some_field_id", new pmWidgetFormPropelJQuerySearch(array(
       "model" => "SomeField",
       "column" => "some_column"
-    ));
+    )));
+    
+### mtWidgetFormInputDate
+
+The `mtWidgetFormInputDate` displays an input text for selecting dates.
+Must be validated with mtValidatorDateString and jquery and jqueryui are
+REQUIRED.
+
+##### Usage
+
+    [php]
+    $this->setWidget("date", new mtWidgetFormInputDate());
+    
+## Validators
+
+### mtValidatorDateString
+
+Validates dates represented as strings.
+
+##### Usage
+
+    [php]
+    $this->setValidator("date", new mtValidatorDateString());
     
 ## For developers
 
