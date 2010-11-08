@@ -18,6 +18,7 @@ function pmWidgetFormJQuerySearch()
   
     jQuery.ajax({
       url: this.url,
+      type: "POST",
       data:
       {
         search: value,
