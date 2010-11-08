@@ -31,6 +31,7 @@ class mtValidatorDateString extends sfValidatorDate
         $value['year']  = $dateArray[2];
       }
     }
+    
     return parent::doClean($value);
   }
 }
