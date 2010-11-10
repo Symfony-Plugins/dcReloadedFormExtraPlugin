@@ -31,7 +31,7 @@ var dcWidgetFormJqueryDependence={
   },
   updateDependenciesFor: function (widget)
   {
-      jQuery("#"+widget.id).trigger(widget.options.event);
+      jQuery("#"+widget.id).trigger(widget.options.event, ["automated_ajax_dependence"]);
   },
   /**
    * This is the callback that will be called when some dependency changes
@@ -75,7 +75,7 @@ var dcWidgetFormJqueryDependence={
         jQuery.each(dcWidgetFormJqueryDependence.observed_widgets, function(){
           if (this.root)
           { 
-            jQuery("#"+this.observed_id).trigger(this.event);
+            jQuery("#"+this.observed_id).trigger(this.event, ["automated_ajax_dependence"]);
           }
         });
       });
