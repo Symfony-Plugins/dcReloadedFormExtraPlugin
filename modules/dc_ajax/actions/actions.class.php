@@ -121,7 +121,7 @@ class dc_ajaxActions extends sfActions
     {
       $this->limit = $this->options["limit"];
       $criteria->setLimit($this->limit);
-      $criteria->setPage($this->page);
+      $criteria->setOffset($this->page * $this->limit);
     }
     
     $this->objects = call_user_func(array($class, $this->options['peer_method']), $criteria, $this->options['connection']);

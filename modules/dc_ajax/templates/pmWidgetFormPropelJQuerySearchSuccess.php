@@ -22,7 +22,7 @@
           <?php echo link_to_function(__("Previous"), "$js_var_name.search($previous_page)") ?>
         </li>
       <?php endif ?>
-      <?php if (count($results) == $limit): ?>
+      <?php if (count($objects) == $limit): ?>
         <li id="jquery_search_navigation_next">
           <?php echo link_to_function(__("Next"), "$js_var_name.search($next_page)") ?>
         </li>
