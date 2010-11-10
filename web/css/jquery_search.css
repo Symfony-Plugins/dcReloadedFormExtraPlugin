@@ -1,0 +1,35 @@
+dl#jquery_search_results
+{
+  margin-left: 0px !important;
+}
+
+ul#jquery_search_navigation
+{
+  list-style: none;
+}
+
+ul#jquery_search_navigation
+{
+  margin-left: 0;
+}
+
+ul#jquery_search_navigation li
+{
+  display: inline;
+  padding-left: 20px;
+}
+
+ul#jquery_search_navigation li#jquery_search_navigation_previous a
+{
+  background: url(../images/resultset_previous.png) no-repeat 0px 0px !important;
+}
+
+ul#jquery_search_navigation li#jquery_search_navigation_next a
+{
+  padding-right: 50px;
+}
+
+ul#jquery_search_navigation li#jquery_search_navigation_next a
+{
+  background: url(../images/resultset_next.png) no-repeat 50px 0px !important;
+}

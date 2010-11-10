@@ -48,6 +48,7 @@ class pmWidgetFormJQuerySearch extends sfWidgetForm
     $this->addOption("search_widget", new sfWidgetFormInputText());
     $this->addOption("selected_label", "Selected element");
     $this->addOption("search_label", "Search");
+    $this->addOption("limit", 10);
     $this->addOption("search_template", <<<EOF
 <div class="preview">%selected_label%: <span id="%preview_div_id%">%value%</span></div>
 %value_widget%
@@ -98,6 +99,11 @@ EOF
   public function getJavaScripts()
   {
     return array("/dcReloadedFormExtraPlugin/js/jquery_search.js");
+  }
+  
+  public function getStylesheets()
+  {
+    return array("/dcReloadedFormExtraPlugin/css/jquery_search.css" => "all");
   }
   
   public function getWidgetInitializationJS($name, $value)

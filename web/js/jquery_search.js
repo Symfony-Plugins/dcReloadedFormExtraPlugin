@@ -10,8 +10,10 @@ function pmWidgetFormJQuerySearch()
   this.serialized_options = "";
   this.js_var_name = "";
     
-  this.search = function()
+  this.search = function(page)
   {
+    page = typeof(page) != 'undefined' ? page : 0;
+    
     value = jQuery(this.search_widget_id).val();
     
     var instance = this;
@@ -21,6 +23,7 @@ function pmWidgetFormJQuerySearch()
       type: "POST",
       data:
       {
+        page: page,
         search: value,
         serialized_options: this.serialized_options,
         js_var_name: this.js_var_name

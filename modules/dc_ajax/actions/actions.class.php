@@ -72,6 +72,10 @@ class dc_ajaxActions extends sfActions
     $this->search = $request->getParameter("search");
     $this->js_var_name = $request->getParameter("js_var_name");
     
+    $this->page = $request->getParameter("page");
+    $this->previous_page = $this->page - 1;
+    $this->next_page = $this->page + 1;
+    
     $this->options = unserialize(base64_decode($request->getParameter("serialized_options")));
     
     $results = array();
@@ -110,6 +114,16 @@ class dc_ajaxActions extends sfActions
       $method = sprintf('add%sOrderByColumn', 0 === strpos(strtoupper($order[1]), 'ASC') ? 'Ascending' : 'Descending');
       $criteria->$method(call_user_func(array($class, 'translateFieldName'), $order[0], BasePeer::TYPE_PHPNAME, BasePeer::TYPE_COLNAME));
     }
+    
+    $this->total_objects = call_user_func(array($class, 'doCount'), $criteria, $this->options['connection']);
+    
+    if (isset($this->options['limit']))
+    {
+      $this->limit = $this->options["limit"];
+      $criteria->setLimit($this->limit);
+      $criteria->setPage($this->page);
+    }
+    
     $this->objects = call_user_func(array($class, $this->options['peer_method']), $criteria, $this->options['connection']);
     
     $this->methodKey = $this->options['key_method'];
