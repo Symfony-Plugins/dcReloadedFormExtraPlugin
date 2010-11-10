@@ -137,5 +137,7 @@ class dc_ajaxActions extends sfActions
     {
       throw new RuntimeException(sprintf('Class "%s" must implement a "%s" method to be rendered in a "%s" widget', $this->options['model'], $this->methodValue, "pmWidgetFormPropelJQuerySearch"));
     }
+    
+    return $this->renderPartial("dc_ajax/pmWidgetFormPropelJQuerySearch");
   }
 }

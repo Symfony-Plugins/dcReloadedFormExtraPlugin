@@ -30,6 +30,7 @@ class pmWidgetFormJQuerySearch extends sfWidgetForm
    *                              * widget_initialization_js
    *                              * value
    *                              * js_var
+   *  * results_partial              The partial that displays the results
    *  * select_image:           The image for selecting a result
    *  * deselect_image:         The image for deselecting a result
    *  * no_results_found_label: The text for empty results search
@@ -58,6 +59,7 @@ class pmWidgetFormJQuerySearch extends sfWidgetForm
 %widget_initialization_js%
 EOF
     );
+    $this->addOption("results_partial", "dc_ajax/pmWidgetFormJQuerySearch");
     $this->addOption("select_image", "/dcReloadedFormExtraPlugin/images/accept.png");
     $this->addOption("deselect_image", "/dcReloadedFormExtraPlugin/images/delete.png");
     $this->addOption("no_results_found_label", "No results found");

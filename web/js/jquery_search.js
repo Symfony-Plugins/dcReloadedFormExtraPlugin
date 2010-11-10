@@ -59,9 +59,7 @@ function pmWidgetFormJQuerySearch()
     	{
     	  eval(instance.js_var_name+".select("+value+", '"+text+"');")
     	})
-    	.css("margin-left", "10px")
-    	.css("vertical-align", "middle")
-    	.appendTo(jQuery("#result_"+value));
+    	.prependTo(jQuery("#result_"+value));
   }
   
   this.getDeselectLink = function()
@@ -73,8 +71,6 @@ function pmWidgetFormJQuerySearch()
   	  {
   	    eval(instance.js_var_name+".deselect();");
   	  })
-  	  .css("margin-left", "10px")
-  	  .css("vertical-align", "middle")
   		.appendTo(jQuery(this.preview_div_id));
   }
   
