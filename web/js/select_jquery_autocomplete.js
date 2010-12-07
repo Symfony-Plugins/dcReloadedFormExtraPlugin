@@ -41,6 +41,9 @@
 						{
 							item: ui.item.option
 						});
+						
+						// review this: (for updating other elements)
+						$("#"+self.element.context.id).change();
 					},
 					change: function(event, ui)
 					{
