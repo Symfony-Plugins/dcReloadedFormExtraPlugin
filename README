@@ -7,9 +7,15 @@ etc.
 
   * svn installation:
 
+        [bash]
         $ svn co http://svn.symfony-project.com/plugins/dcReloadedFormExtraPlugin/trunk plugins/dcReloadedFormExtraPlugin
 
-  * Enable the plugin in your proyect configuration
+  * install as a plugin:
+  
+        [bash]
+        $ ./symfony pl:i dcReloadedFormExtraPlugin
+
+  * Enable the plugin in your proyect configuration (only if installed through svn)
 
         [php]
         // in config/ProjectConfiguration.class.php add:
@@ -17,6 +23,7 @@ etc.
 
   * clear the cache
 
+        [bash]
         $ ./symfony cc
 
 ## Widgets
@@ -133,7 +140,7 @@ The `mtWidgetFormPartial` displays a partial.
 ### pmWidgetFormSelectJQueryAutocomplete
 
 The `pmWidgetFormSelectJQueryAutocomplete` displays an autocomplete based on a
-<select> tag. This widget is basically a renderer, so it can be used as the
+select tag. This widget is basically a renderer, so it can be used as the
 renderer of a sfWidgetFormChoice, sfWidgetFormPropelChoice, etc.
 
 jquery ui is required.
@@ -202,8 +209,3 @@ Validates dates represented as strings.
 
   * Add more of the sfWidgetFormPropelChoice parameters to the getPropelChoices
     action (and getDoctrineChoices).
-    
-### dcWidgetFormAjaxDependence y dcWidgetFormPropelAjaxDependence
-
-  * Port to jQuery. Once this is done, delete js/prototype.js, that is added
-    JUST for this widget.
