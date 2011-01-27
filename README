@@ -100,6 +100,12 @@ And then you must implement the getValueForUpdate method.
 Same as dcWidgetFormAjaxDependence, except that retrieves objects from Propel
 classes.
 
+
+### dcWidgetFormJQueryActivator
+
+Based on dcWidgetFormJQueryDependence. It enables or disables the widget when another changes
+and a given condition evaluates to true.
+
 ### mtWidgetFormPlain
 
 The `mtWidgetFormPlain` displays a plain value.

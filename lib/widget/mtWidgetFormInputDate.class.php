@@ -56,7 +56,7 @@ class mtWidgetFormInputDate extends sfWidgetFormInput
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array("JavascriptBase"));
-    
+
     if (preg_match('/\d+-\d+-\d+/',$value))
     {
       $value = strtotime($value);
@@ -65,11 +65,11 @@ class mtWidgetFormInputDate extends sfWidgetFormInput
         $value=date('d/m/Y',$value);
       }
     }
-    return  
+    return
         javascript_tag($this->getJavascriptCode($this->generateId($name))).
         $this->renderTag('input', array_merge(array(
-            'type' => $this->getOption('type'), 
-            'name' => $name, 
+            'type' => $this->getOption('type'),
+            'name' => $name,
             'style'=> "width: 10em; text-align: right",
             'value' => $value), $attributes)).
         $this->renderOwnHelp();
