@@ -84,7 +84,7 @@ class dcWidgetFormActivator extends sfWidgetForm
   static public function renderAfterUpdate($dependant_values, $options)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('Tag', 'JavascriptBase'));
-    if (call_user_func($options['evaluate_method'], self::filterValues($dependant_values, $options['observed_boolean_ids']), $options['evaluate_method_extra_params']))
+    if (call_user_func($options['evaluate_method'], self::filterValues($dependant_values, $options['observed_boolean_ids']), isset($options['evaluate_method_extra_params'])? $options['evaluate_method_extra_params'] : null))
     {
       return javascript_tag("jQuery('#".$options['id']."').removeAttr('disabled');");
     }
