@@ -105,7 +105,7 @@ var dcWidgetFormActivator={
             object.root=false;
           }
         });
-        dcWidgetFormJqueryDependence.observed_widgets.push(object);
+        dcWidgetFormActivator.observed_widgets.push(object);
     });
   }
 }
