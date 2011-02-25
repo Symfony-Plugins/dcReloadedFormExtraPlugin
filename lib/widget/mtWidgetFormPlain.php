@@ -26,43 +26,81 @@ class mtWidgetFormPlain extends sfWidgetForm
     parent::__construct($options, $attributes);
   }
 
-  public function render($name, $value = null, $attributes = array(), $errors = array())
+  protected function retrieveValue($value)
   {
-    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
-    $original_value = $value;
-    if (!is_null($this->getOption('object')))
+    if (null !== $this->getOption('object'))
     {
-      $args=$this->getOption('method_args');
-      if (is_null($args))
+      $callback = array($this->getOption('object'), $this->getOption('method'));
+      $args     = $this->getOption('method_args');
+
+      if (null === $args)
       {
-        $value  = call_user_func(array($this->getOption('object'), $this->getOption('method')));
+        $value = call_user_func($callback);
       }
       else
-      { $args=is_array($args)?$args:array($args);
-        $value  = call_user_func_array(array($this->getOption('object'), $this->getOption('method')),$args);
+      {
+        $value = call_user_func_array($callback, is_array($args) ? $args : array($args));
       }
     }
 
-    if (!is_null($this->getOption('value_callback')))
+    return $value;
+  }
+
+  protected function retrieveStringValue($value)
+  {
+    if (null !== $this->getOption('value_callback'))
     {
-      $string_value = call_user_func($this->getOption('value_callback'), $value);
+      try
+      {
+        $string_value = call_user_func($this->getOption('value_callback'), $value);
+      }
+      catch (Exception $e)
+      {
+        $string_value = $value;
+      }
     }
     else
     {
       $string_value = $value;
     }
 
+    return $string_value;
+  }
+
+  protected function renderHiddenField($name, $value, $attributes = array())
+  {
+    $input_hidden = new sfWidgetFormInputHidden(array(), $attributes);
+
+    return $input_hidden->render($name, $value);
+  }
+
+  protected function renderDescription($name, $value, $content)
+  {
+    return $this->renderContentTag('span', $content, array('id' => $this->generateId($name, $value).'_description'));
+  }
+
+  public function render($name, $value = null, $attributes = array(), $errors = array())
+  {
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
+
+    $original_value = $value;
+    $value          = $this->retrieveValue($value);
+    $string_value   = $this->retrieveStringValue($value);
+
     $html = '';
+
     if ($this->getOption('add_hidden_input'))
     {
-      $val = $this->getOption('use_retrieved_value')? $value : $original_value;
-      $input_hidden = new sfWidgetFormInputHidden(array(), $attributes);
-      $html .= $input_hidden->render($name, $val);
+      $hidden_value = $this->getOption('use_retrieved_value') ? $value : $original_value;
+
+      $html .= $this->renderHiddenField($name, $hidden_value, $attributes);
     }
 
-    $text = is_null($value) ? __($this->getOption('empty_value')) : $string_value;
-    $html .= '<span id="'.$this->generateId($name.'_description', $value).'">'.$text.'</span>';
+    $description = null === $value ? __($this->getOption('empty_value')) : $string_value;
+
+    $html .= $this->renderDescription($name, $value, $description);
 
     return $html;
   }
+
 }
