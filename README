@@ -193,12 +193,28 @@ REQUIRED.
 
     [php]
     $this->setWidget("date", new mtWidgetFormInputDate());
-    
+
+### mtWidgetFormEmbed
+
+Widgets that embeds a dinamic number of forms. This widget only does the 'view' part. The saving and deleting of new and previous object has to be done manually.
+
+### mtWidgetFormCuil
+
+Represents an Argetine CUIL/CUIT
+
 ## Validators
 
 ### mtValidatorDateString
 
 Validates dates represented as strings.
+
+### mtValidatorCuil
+
+Validates a CUIL/CUIT from a String
+
+### mtValidatorCuilExtended
+
+Validates a CUIL/CUIT from a string made by mtWidgetFormCuil
 
 ##### Usage
 

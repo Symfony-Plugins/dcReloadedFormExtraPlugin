@@ -30,6 +30,8 @@
  *  * no_value_text:    Text to be shown when this widget can not be rendered
  *                      because observed_widget_id has no value yet
  *
+ *  * observed_can_be_empty_ids: Array of html ids of inputs that, when empty, the 'no_value_text' won't be shown.
+ *
  * @author Christian A. Rodriguez <car at cespi.unlp.edu.ar>
  */
 class dcWidgetFormJQueryDependence extends sfWidgetForm
@@ -55,6 +57,7 @@ class dcWidgetFormJQueryDependence extends sfWidgetForm
     $this->addOption('callback',url_for('@dc_widget_form_jquery_dependence_changed'));
     $this->addOption('event','change');
     $this->addOption('observed_boolean_ids',array());
+    $this->addOption('observed_can_be_empty_ids', array());
     $this->addOption('loading_image',image_tag('/dcReloadedFormExtraPlugin/images/ajax-loader.gif',array('class'=>'ajax-loader-image', 'alt_title'=>'loading')));
     $this->addOption('no_value_text','Please select a dependant value to update');
   }
@@ -91,7 +94,8 @@ class dcWidgetFormJQueryDependence extends sfWidgetForm
     $render_widget=false;
     foreach ($dependant_values as $key=>$value)
     {
-      if ( !in_array($key,$this->getOption('observed_boolean_ids')) && !empty($value))
+      if (!in_array($key,$this->getOption('observed_boolean_ids'))
+          && (!empty($value) || in_array($key, $this->getOption('observed_can_be_empty_ids'))))
       {
         $render_widget=true;
         break;

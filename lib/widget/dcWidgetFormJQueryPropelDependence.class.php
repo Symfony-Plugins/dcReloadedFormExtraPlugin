@@ -19,6 +19,8 @@ class dcWidgetFormJQueryPropelDependence extends dcWidgetFormJQueryDependence {
     parent::configure($options, $attributes );
     $this->addRequiredOption('related_column');
     $this->addOption('on_change',array(__CLASS__,'updateColumn'));
+    $this->addOption('observed_is_multiple', array());
+    $this->addOption('criteria', null);
   }
 
   /**
@@ -29,16 +31,26 @@ class dcWidgetFormJQueryPropelDependence extends dcWidgetFormJQueryDependence {
    */
   static public function updateColumn(dcWidgetFormJQueryDependence $widget_dependece,$values)
   {
+    $multiple = $widget_dependece->getOption('observed_is_multiple');
     $widget = $widget_dependece->getOption('widget');
     $c=$widget->hasOption('criteria')?$widget->getOption('criteria'):null;
     $c=is_null($c)?new Criteria():$c;
-    foreach ($widget_dependece->getOption('related_column') as $id=>$column)
+    foreach ($widget_dependece->getOption('related_column') as $id => $column)
     {
       if (!array_key_exists($id, $values))
-              throw new LogicException ("Index $id not found in received values");
+      {
+        throw new LogicException ("Index $id not found in received values");
+      }
       if (!empty($values[$id]))
       {
-        $c->addAnd($column,$values[$id]);
+        if (isset($multiple[$id]) && $multiple[$id])
+        {
+          $c->addAnd($column, $values[$id], Criteria::IN);
+        }
+        else
+        {
+          $c->addAnd($column, $values[$id]);
+        }
       }
     }
     $widget->setOption('criteria',$c);

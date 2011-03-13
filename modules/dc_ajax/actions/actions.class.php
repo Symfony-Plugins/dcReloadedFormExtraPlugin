@@ -152,4 +152,53 @@ class dc_ajaxActions extends sfActions
 
     return $this->renderPartial("dc_ajax/pmWidgetFormPropelJQuerySearch");
   }
+
+  public function executeMtWidgetFormEmbedAdd(sfWebRequest $request)
+  {
+    $parentFormName           = mtWidgetFormEmbed::decode($request->getParameter('parent_form_name'));
+    $childFormName            = mtWidgetFormEmbed::decode($request->getParameter('child_form_name'));
+    $formCreationMethod       = mtWidgetFormEmbed::decode($request->getParameter('form_creation_method'));
+    $formCreationMethodParams = mtWidgetFormEmbed::decode($request->getParameter('form_creation_method_params'));
+    $childFormTitleMethod     = mtWidgetFormEmbed::decode($request->getParameter('title_method'));
+    $this->widgetId           = mtWidgetFormEmbed::decode($request->getParameter('widget_id'));
+    $this->formFormatter      = mtWidgetFormEmbed::decode($request->getParameter('form_formatter'));
+    $this->rendererClass      = $request->getParameter('renderer_class');
+    $this->images             = mtWidgetFormEmbed::decode($request->getParameter('images'));
+    $this->childCount         = $request->getParameter('child_count');
+
+    if (!empty($childFormTitleMethod))
+    {
+      if (is_string($childFormTitleMethod))
+      {
+        $this->title = $childFormTitleMethod;
+      }
+      elseif (is_array($childFormTitleMethod))
+      {
+        $this->title = call_user_func($childFormTitleMethod);
+      }
+    }
+
+    $this->form = call_user_func($formCreationMethod, $formCreationMethodParams);
+    $this->form->getWidgetSchema()->setNameFormat("$parentFormName"."[".$childFormName."_".$this->childCount."][%s]");
+    $this->form->getWidgetSchema()->setFormFormatterName($this->formFormatter);
+    $this->formTitle = $this->getFormTitle($this->form, $childFormTitleMethod);
+
+    unset($this->form['_csrf_token']);
+  }
+
+  protected function getFormTitle($form, $childFormTitleMethod)
+  {
+    $method = $childFormTitleMethod;
+    if (!empty($method))
+    {
+      if (method_exists($form, $method))
+      {
+        return $form->$method();
+        return call_user_func(array($form, $method));
+      }
+      return $method;
+    }
+    return '';
+  }
+  
 }

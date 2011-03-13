@@ -14,7 +14,7 @@
  *  'id'      : the id of the wrapper. Defaults to "wrapper_${input_id}"
  *  'ajax_loader_css' : the CSS of the Ajax loader. Defaults to: 'display: none; width: 20px; margin-left: 5px; margin-right: 5px; float: right;'
  *  'ajax_loader_id'  : the id ot the ajax loader. Defaults to: "wrapper_loader_${input_id}"
- *  'ajax_loader_url' : inside symfony path to the ajax loader image. Defaults to '/dcFormExtraPlugin/images/ajax-loader.gif'.
+ *  'ajax_loader_url' : inside symfony path to the ajax loader image. Defaults to '/dcReloadedFormExtraPlugin/images/ajax-loader.gif'.
  *  'provide_ajax_loader' : if set to true, the ajax loader will be drawn.
  *
  */
@@ -29,7 +29,7 @@ class mtWidgetFormWrapper extends sfWidgetForm
     $this->addOption('id', null);
     $this->addOption('ajax_loader_css', 'display: none; width: 20px; margin-left: 5px; margin-right: 5px; float: right;');
     $this->addOption('ajax_loader_id', null);
-    $this->addOption('ajax_loader_url',  '/dcFormExtraPlugin/images/ajax-loader.gif');
+    $this->addOption('ajax_loader_url',  '/dcReloadedFormExtraPlugin/images/ajax-loader.gif');
     $this->addOption('provide_ajax_loader', false);
     parent::configure($options, $attributes);
   }

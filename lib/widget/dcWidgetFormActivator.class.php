@@ -86,11 +86,11 @@ class dcWidgetFormActivator extends sfWidgetForm
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('Tag', 'JavascriptBase'));
     if (call_user_func($options['evaluate_method'], self::filterValues($dependant_values, $options['observed_boolean_ids']), isset($options['evaluate_method_extra_params'])? $options['evaluate_method_extra_params'] : null))
     {
-      return javascript_tag("jQuery('#".$options['id']."').removeAttr('disabled');");
+      return javascript_tag("jQuery('#".$options['id']."').removeAttr('disabled').change();");
     }
     else
     {
-      return javascript_tag("jQuery('#".$options['id']."').attr('disabled', 'disabled');");
+      return javascript_tag("jQuery('#".$options['id']."').children('option:selected').removeAttr('selected').removeAttr('value').change(); jQuery('#".$options['id']."').attr('disabled', 'disabled')");
     }
   }
 

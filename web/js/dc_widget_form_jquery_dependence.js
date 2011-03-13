@@ -42,7 +42,15 @@ var dcWidgetFormJqueryDependence={
     var widget = event.data;
     jQuery.each(widget.observed_array, function ()
     {
+      var input = jQuery("#"+this).is(':checkbox');
+      if (!input)
+      {
         observed_values[this]= jQuery("#"+this).val();
+      }
+      else
+      {
+        observed_values[this]=jQuery("#"+this).is(':checked');
+      }
     });
     jQuery.ajax(
     {
