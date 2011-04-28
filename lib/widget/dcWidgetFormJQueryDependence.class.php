@@ -60,6 +60,7 @@ class dcWidgetFormJQueryDependence extends sfWidgetForm
     $this->addOption('observed_can_be_empty_ids', array());
     $this->addOption('loading_image',image_tag('/dcReloadedFormExtraPlugin/images/ajax-loader.gif',array('class'=>'ajax-loader-image', 'alt_title'=>'loading')));
     $this->addOption('no_value_text','Please select a dependant value to update');
+    $this->addOption('or_null', false);
   }
 
   /**
@@ -103,7 +104,7 @@ class dcWidgetFormJQueryDependence extends sfWidgetForm
     }
     call_user_func($this->getOption('on_change'),$this,$dependant_values);
     return (
-      $render_widget?
+      ($render_widget || $this->getOption('or_null'))?
         $this->getOption('widget')->render($this->myname,$this->myvalue, $this->myattributes, $this->myerrors):
         $this->getOption('no_value_text')).
       $this->getJQueryUpdateDependencies();

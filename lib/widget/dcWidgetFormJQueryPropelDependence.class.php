@@ -43,14 +43,15 @@ class dcWidgetFormJQueryPropelDependence extends dcWidgetFormJQueryDependence {
       }
       if (!empty($values[$id]))
       {
-        if (isset($multiple[$id]) && $multiple[$id])
+        $crit = $c->getNewCriterion($column, $values[$id], (isset($multiple[$id]) && $multiple[$id]? Criteria::IN : Criteria::EQUAL));
+
+        if ($widget_dependece->getOption('or_null'))
         {
-          $c->addAnd($column, $values[$id], Criteria::IN);
+          $crit2 = $c->getNewCriterion($column, null, Criteria::ISNULL);
+          $crit->addOr($crit2);
         }
-        else
-        {
-          $c->addAnd($column, $values[$id]);
-        }
+
+        $c->addAnd($crit);
       }
     }
     $widget->setOption('criteria',$c);
