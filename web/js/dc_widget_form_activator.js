@@ -42,7 +42,7 @@ var dcWidgetFormActivator={
     var widget = event.data;
     jQuery.each(widget.observed_array, function ()
     {
-      if (jQuery.inArray(this, widget.observed_boolean_ids) > -1)
+      if (jQuery('#'+ this).attr('checked') != undefined)
       {
         observed_values[this] = jQuery('#' + this).attr('checked');
       }
