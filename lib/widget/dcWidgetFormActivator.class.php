@@ -97,6 +97,7 @@ class dcWidgetFormActivator extends sfWidgetForm
   static public function filterValues($values, $boolean_ids)
   {
     $filteredValues = array();
+    $boolean_ids    = empty($boolean_ids)? array() : $boolean_ids;
 
     foreach ($values as $key => $value)
     {
