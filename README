@@ -220,7 +220,34 @@ Validates a CUIL/CUIT from a string made by mtWidgetFormCuil
 
     [php]
     $this->setValidator("date", new mtValidatorDateString());
+
+## Form auto-initialization
+
+This plugin provides form classes (which extends sfFormPropel and sfFormFilterPropel) that auto-initializes forms.
+
+You just have to change the super class of the BaseFormPropel (and BaseFormFilterPropel) in order to use this functionality.
+
+    [php]
+    abstract class BaseFormPropel extends pmFormPropel
+    {
+    }
     
+and
+
+    [php]
+    abstract class BaseFormPropel extends pmFormFilterPropel
+    {
+    }
+
+These clases uses the plugin's widgets and validators to initialize widgets and validators automatically:
+  * unsets created_at and updated_at fields
+  * uses mtWidgetFormInputDate for date widgets
+  * replaces fields named "attachment" with sfWidgetFormInputFile
+  * hides created_by and updated_by fields
+  
+  * uses mtValidatorDateString for date validators
+  * uses sfValidatorFile for fields named "attachment"
+
 ## For developers
 
   * If you need to create ajax actions use the `dc_ajax` module.
