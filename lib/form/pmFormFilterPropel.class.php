@@ -3,7 +3,7 @@
 /**
  * @author Patricio Mac Adden <pmacadden@cespi.unlp.edu.ar>
  */
-abstract class pmFormPropel extends sfFormPropel
+abstract class pmFormFilterPropel extends sfFormFilterPropel
 {
   public function setup()
   {
