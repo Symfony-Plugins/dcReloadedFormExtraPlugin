@@ -22,19 +22,22 @@ abstract class pmFormCommon
     $form->configureWidgets();
     $form->configureValidators();
     
-    $sf_user = sfContext::getInstance()->getUser();
-    if (method_exists($sf_user, "getGuardUser"))
+    if ($form instanceof pmFormPropel)
     {
-      $user_id = $sf_user->getGuardUser()->getId();
-      
-      if (array_key_exists("created_by", $form->getWidgetSchema()->getFields()) && $form->getObject()->isNew())
+      $sf_user = sfContext::getInstance()->getUser();
+      if (method_exists($sf_user, "getGuardUser"))
       {
-        $form->getObject()->setCreatedBy($user_id);
-      }
-      
-      if (array_key_exists("updated_by", $this->getWidgetSchema()->getFields()))
-      {
-        $this->getObject()->setUpdatedBy($user_id);
+        $user_id = $sf_user->getGuardUser()->getId();
+        
+        if (array_key_exists("created_by", $form->getWidgetSchema()->getFields()) && $form->getObject()->isNew())
+        {
+          $form->getObject()->setCreatedBy($user_id);
+        }
+        
+        if (array_key_exists("updated_by", $form->getWidgetSchema()->getFields()))
+        {
+          $form->getObject()->setUpdatedBy($user_id);
+        }
       }
     }
   }

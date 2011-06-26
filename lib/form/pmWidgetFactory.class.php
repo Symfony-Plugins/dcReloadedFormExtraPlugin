@@ -19,6 +19,11 @@ class pmWidgetFactory
         $form->getWidget($name)->setOption("to_date", self::getDateWidget(array("use_own_help" => false)));
         $form->getWidget($name)->setOption("template", __("from %from_date% to %to_date%"));
       }
+      elseif ($widget instanceof sfWidgetFormTextarea)
+      {
+        $form->getWidget($name)->setAttribute("rows", 15);
+        $form->getWidget($name)->setAttribute("cols", 100);
+      }
       
       if ($name == "attachment")
       {
