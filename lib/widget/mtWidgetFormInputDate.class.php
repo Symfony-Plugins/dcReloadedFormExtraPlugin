@@ -16,13 +16,15 @@ class mtWidgetFormInputDate extends sfWidgetFormInput
     parent::configure($options,$attributes);
     
     $this->addOption('locale', 'es');
+    $this->addOption('config', '{}');
     $this->addOption('use_own_help', true);
     $this->addOption('own_help', __('Date format is "dd/mm/yyyy"'));
   }
 
   protected function getJavascriptCode($id)
   {
-    $locale=$this->getOption('locale');
+    $locale = $this->getOption('locale');
+    $config = $this->getOption('config');
     return "
       jQuery(function() {
         var params = {
@@ -43,7 +45,7 @@ class mtWidgetFormInputDate extends sfWidgetFormInput
             isRTL: false
         };
         jQuery.datepicker.setDefaults(params);
-        jQuery('#$id').datepicker();
+        jQuery('#$id').datepicker($config);
       }); 
     ";
   }
