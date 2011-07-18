@@ -57,7 +57,7 @@ function pmWidgetFormJQuerySearch()
     jQuery("<a><img src='"+eval(this.js_var_name+".select_image")+"'/></a>")
     	.click(function ()
     	{
-    	  eval(instance.js_var_name+".select("+value+", '"+text+"');")
+    	  eval(instance.js_var_name+".select('"+value+"', '"+text+"');")
     	})
     	.prependTo(jQuery("#result_"+value));
   }
