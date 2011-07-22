@@ -98,6 +98,7 @@ class dcWidgetFormActivator extends sfWidgetForm
   {
     $filteredValues = array();
     $boolean_ids    = empty($boolean_ids)? array() : $boolean_ids;
+    $values         = is_null($values)? array() : $values;
 
     foreach ($values as $key => $value)
     {
@@ -149,6 +150,8 @@ class dcWidgetFormActivator extends sfWidgetForm
    */
   static public function decodeWidget($widget_array)
   {
+    $widget_array['observed_boolean_ids'] = isset($widget_array['observed_boolean_ids'])? $widget_array['observed_boolean_ids'] : array();
+
     return $widget_array;
   }
 
