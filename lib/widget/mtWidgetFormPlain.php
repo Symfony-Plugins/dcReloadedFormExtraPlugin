@@ -96,7 +96,7 @@ class mtWidgetFormPlain extends sfWidgetForm
       $html .= $this->renderHiddenField($name, $hidden_value, $attributes);
     }
 
-    $description = null === $value ? __($this->getOption('empty_value')) : $string_value;
+    $description = null === $value || strlen($value) == 0 ? __($this->getOption('empty_value')) : $string_value;
 
     $html .= $this->renderDescription($name, $value, $description);
 
