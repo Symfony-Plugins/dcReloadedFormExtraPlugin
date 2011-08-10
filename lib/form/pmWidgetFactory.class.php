@@ -31,7 +31,10 @@ class pmWidgetFactory
       }
       elseif ($name == "created_by" || $name == "updated_by")
       {
-        $form->setWidget($name, new sfWidgetFormInputHidden());
+        if ($form instanceof sfFormPropel)
+        {
+          $form->setWidget($name, new sfWidgetFormInputHidden());
+        }
       }
       elseif ($name == "password")
       {
