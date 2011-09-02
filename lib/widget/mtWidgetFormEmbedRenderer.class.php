@@ -24,8 +24,12 @@ class mtWidgetFormEmbedRenderer
 
   static public $decoratorFormActionString = '<a href="#" onclick="%js_function%"><img src="%img_src%" /><span class="action-text">%text%</span></a>';
 
-  static public $decoratorToolbarString = '<div class="mtWidgetFormEmbedToolbar">
+  static public $decoratorToolbarString = '
+<div class="mtWidgetFormEmbedToolbar">
   %toolbar_buttons%
+  <div id="mtWidgetFormEmbedAjaxLoader" style="display: none;">
+    %ajax-loader-string%
+  </div>
 </div>';
 
   static public $decoratorToolbarButtonString  = '<a href="#" onclick="%js_function%">
@@ -36,17 +40,18 @@ class mtWidgetFormEmbedRenderer
 </a>';
 
    static public $decoratorFormString = '<div class="mtWidgetFormEmbedForm">
+  %includes%
   %header%
   %hidden_fields%
   %global_errors%
   %form%
 </div>';
 
-  static public function renderForm($formHeaderHtml, $formHtml, $globalErrorsHtml = '', $hiddenFieldsHtml = '')
+  static public function renderForm($formHeaderHtml, $formHtml, $globalErrorsHtml = '', $hiddenFieldsHtml = '', $includes = '')
   {
     return str_replace(
-      array('%header%', '%form%', '%hidden_fields%', '%global_errors%'),
-      array($formHeaderHtml, $formHtml, $hiddenFieldsHtml, $globalErrorsHtml),
+      array('%header%', '%form%', '%hidden_fields%', '%global_errors%', '%includes%'),
+      array($formHeaderHtml, $formHtml, $hiddenFieldsHtml, $globalErrorsHtml, $includes),
       self::$decoratorFormString);
   }
 
@@ -68,12 +73,13 @@ class mtWidgetFormEmbedRenderer
     );
   }
 
-  static public function renderButtonRemoveForm($id, $formIndex, $imgSrc, $text)
+  static public function renderButtonRemoveForm($id, $formIndex, $imgSrc, $text, $afterJs = '')
   {
     $js = str_replace(
       array('%id%', '%form_index%'),
       array($id, $formIndex),
-      "jQuery('#%id% option[value=%form_index%]').remove(); jQuery(this).parents('.mtWidgetFormEmbedForm').remove();"
+      "jQuery('#%id% option[value=%form_index%]').remove(); jQuery(this).parents('.mtWidgetFormEmbedForm').remove();
+      $afterJs"
     );
 
     return mtWidgetFormEmbedRenderer::renderFormAction($id, $formIndex, $imgSrc, $text, $js);
@@ -97,11 +103,11 @@ class mtWidgetFormEmbedRenderer
     );
   }
 
-  static public function render($id, $toolbar, $forms, $hiddenTags, $title = '')
+  static public function render($id, $toolbar, $forms, $hiddenTags, $title = '', $ajaxLoaderString = '')
   {
     return str_replace(
-      array('%id%', '%toolbar%', '%embedded_forms%', '%hidden_tags%', '%title%'),
-      array($id, $toolbar, $forms, $hiddenTags, $title),
+      array('%id%', '%toolbar%', '%embedded_forms%', '%hidden_tags%', '%title%', '%ajax-loader-string%'),
+      array($id, $toolbar, $forms, $hiddenTags, $title, $ajaxLoaderString),
       self::$decoratorString
     );
   }

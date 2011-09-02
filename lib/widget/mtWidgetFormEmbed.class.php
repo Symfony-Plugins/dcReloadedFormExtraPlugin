@@ -85,6 +85,13 @@ class mtWidgetFormEmbed extends sfWidgetForm
 
   public function configure($options = array(), $attributes = array())
   {
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array(
+      'Asset',
+      'Url',
+      'Tag',
+      'JavascriptBase',
+    ));
+
     parent::configure($options, $attributes);
     /* Options used to create the embedded form */
     $this->addRequiredOption('form_creation_method');
@@ -95,6 +102,8 @@ class mtWidgetFormEmbed extends sfWidgetForm
     $this->addOption('form_creation_method_params', array());
     $this->addOption('form_formatter', 'table');
     $this->addOption('renderer_class', 'mtWidgetFormEmbedRenderer');
+    $this->addOption('stylesheet', '/dcReloadedFormExtraPlugin/css/mtWidgetFormEmbed.css');
+    $this->addOption('ajax-loader', image_tag('/dcReloadedFormExtraPlugin/images/ajax-loader-2.gif', array('class' => 'ajax-loader-image'))."&nbsp;Please, wait...");
 
     /* Options used to update the parent form */
     $this->addRequiredOption('parent_form');
@@ -114,6 +123,8 @@ class mtWidgetFormEmbed extends sfWidgetForm
     $this->addOption('toolbar-reset-image', '/dcReloadedFormExtraPlugin/images/update.png');
     $this->addOption('delete-button-image', '/dcReloadedFormExtraPlugin/images/close-action.png');
     $this->addOption('delete-button-text', 'delete');
+    $this->addOption('after-add-js', '');
+    $this->addOption('after-delete-js', '');
   }
 
   public function getChoices()
@@ -148,7 +159,6 @@ class mtWidgetFormEmbed extends sfWidgetForm
 
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
-    sfContext::getInstance()->getConfiguration()->loadHelpers(array('Asset', 'Url'));
     $id = $this->generateId($name);
 
     $choiceWidget = new sfWidgetFormSelectMany(array('choices' => $this->getChoices(), 'is_hidden' => true), array('style' => 'display: none'));
@@ -182,7 +192,8 @@ class mtWidgetFormEmbed extends sfWidgetForm
       ),
       $embeddedForm,
       $choiceHtml,
-      $this->renderDispatch('renderTitle', $this->getOption('title'))
+      $this->renderDispatch('renderTitle', $this->getOption('title')),
+      $this->getOption('ajax-loader')
     );
 
     $html .= '<input type="hidden" value="'.htmlentities($embeddedForm, ENT_COMPAT, "UTF-8").'" id="_'.$id.'_original_forms" name="_'.$id.'_original_forms" />';
@@ -233,22 +244,25 @@ class mtWidgetFormEmbed extends sfWidgetForm
 
       /* Renders form's code */
       $parentForm->setWidget($formName, $formTempWidget);
+
       $formHtml = $this->renderDispatch('renderForm',
         $this->renderDispatch('renderFormHeader',
-          $this->renderDispatch('renderButtonRemoveForm', $this->generateId($name), $formIndex, image_path($this->getOption('delete-button-image')), $this->getOption('delete-button-text')),
+          $this->renderDispatch('renderButtonRemoveForm', $this->generateId($name), $formIndex, image_path($this->getOption('delete-button-image')), $this->getOption('delete-button-text'), $this->getOption('after-delete-js')),
           $this->getFormTitle($form, $formTaintedValues)),
-        $parentForm[$formName]->render(array())
+        $parentForm[$formName]->render(array()),
+        get_javascripts_for_form($form).get_stylesheets_for_form($form)
       );
       $parentForm->setWidget($formName, $formClonedWidget);
 
       $html .= $formHtml;
     }
+
     return $html;
   }
 
   public function getStyleSheets()
   {
-    return array_merge(parent::getStyleSheets(), array('/dcReloadedFormExtraPlugin/css/mtWidgetFormEmbed.css' => 'all'));
+    return array_merge(parent::getStyleSheets(), array($this->getOption('stylesheet') => 'all'));
   }
 
   public function embedForms($widgetName)
@@ -315,12 +329,23 @@ class mtWidgetFormEmbed extends sfWidgetForm
       'delete-button-image' => array('image' => $this->getOption('delete-button-image'), 'text' => $this->getOption('delete-button-text'))
     );
 
-    return "jQuery.ajax({ async: false,
+    return "
+      var count = 0;
+      if (jQuery('#$id').find('option').length > 0)
+      {
+        count = parseInt(jQuery('#$id').find('option').last().attr('value')) + 1;
+      }
+      jQuery.ajax({ async: false,
                           type: 'POST',
                           complete: function (xhr, textStatus) {
-                            var count=jQuery('#wrapper_$id .mtWidgetFormEmbedForm').length;
                             jQuery('#wrapper_$id .mtWidgetFormEmbedWorkspace').append(xhr.responseText);
                             jQuery('#$id').append('<option selected=selected value='+count+'>'+count+'</option>');
+                            jQuery('#mtWidgetFormEmbedAjaxLoader').hide();
+                            ".$this->getOption('after-add-js')."
+                          },
+                          beforeSend: function(jqXhr, settings)
+                          {
+                            jQuery('#mtWidgetFormEmbedAjaxLoader').show();
                           },
                           data: {
                                   'form_creation_method' : '".self::encode($this->getOption('form_creation_method'))."',
@@ -328,11 +353,12 @@ class mtWidgetFormEmbed extends sfWidgetForm
                                   'parent_form_name' : '".self::encode($this->getOption('parent_form')->getName())."',
                                   'child_form_name' : '".self::encode($this->getOption('child_form_name'))."',
                                   'title_method' : '".self::encode($this->getOption('child_form_title_method'))."',
-                                  'child_count' : jQuery('#wrapper_".$id." .mtWidgetFormEmbedForm').length,
+                                  'child_count' : count,
                                   'widget_id' : '".self::encode($id)."',
                                   'images' : '".self::encode($images)."',
                                   'renderer_class' : '".$this->getOption('renderer_class')."',
-                                  'form_formatter' : '".self::encode($this->getOption('form_formatter'))."'
+                                  'form_formatter' : '".self::encode($this->getOption('form_formatter'))."',
+                                  'after_delete_js' : '".self::encode($this->getOption('after-delete-js'))."'
                                 },
                           url: '".url_for('dc_ajax/mtWidgetFormEmbedAdd')."'
                         });";

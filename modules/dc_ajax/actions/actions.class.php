@@ -162,6 +162,7 @@ class dc_ajaxActions extends sfActions
     $childFormTitleMethod     = mtWidgetFormEmbed::decode($request->getParameter('title_method'));
     $this->widgetId           = mtWidgetFormEmbed::decode($request->getParameter('widget_id'));
     $this->formFormatter      = mtWidgetFormEmbed::decode($request->getParameter('form_formatter'));
+    $this->afterDeleteJs      = mtWidgetFormEmbed::decode($request->getParameter('after_delete_js'));
     $this->rendererClass      = $request->getParameter('renderer_class');
     $this->images             = mtWidgetFormEmbed::decode($request->getParameter('images'));
     $this->childCount         = $request->getParameter('child_count');

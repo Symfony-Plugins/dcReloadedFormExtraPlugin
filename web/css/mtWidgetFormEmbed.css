@@ -120,3 +120,8 @@ input.mtWidgetFormCuilSuffix
 {
   width: 2em !important;
 }
+
+div.mtWidgetFormEmbedAjaxLoader
+{
+  padding-top: 25px;
+}
