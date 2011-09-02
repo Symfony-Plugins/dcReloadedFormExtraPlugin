@@ -127,27 +127,6 @@ class mtWidgetFormEmbed extends sfWidgetForm
     $this->addOption('after-delete-js', '');
   }
 
-  public function getChoices()
-  {
-    $values = $this->getValue();
-    if (count($values) > 0)
-    {
-      return array_combine($this->getValue(), $this->getValue());
-    }
-    return array();
-  }
-
-  public function getValue()
-  {
-    $ret = array();
-    for ($i=0;$i<count($this->embeddedForms);$i++)
-    {
-      $ret[$i] = $i;
-    }
-    return $ret;
-  }
-
-
   protected function renderDispatch()
   {
     $class  = $this->getOption('renderer_class');
@@ -161,8 +140,8 @@ class mtWidgetFormEmbed extends sfWidgetForm
   {
     $id = $this->generateId($name);
 
-    $choiceWidget = new sfWidgetFormSelectMany(array('choices' => $this->getChoices(), 'is_hidden' => true), array('style' => 'display: none'));
-    $choiceHtml   = $choiceWidget->render($name, $this->getValue(), $attributes, $errors);
+    $choiceWidget = new sfWidgetFormSelectMany(array('choices' => array_combine($value, $value), 'is_hidden' => true), array('style' => 'display: none'));
+    $choiceHtml   = $choiceWidget->render($name, $value, $attributes, $errors);
     $embeddedForm = $this->renderEmbeddedForms($name);
 
     $html = $this->renderDispatch('render',
