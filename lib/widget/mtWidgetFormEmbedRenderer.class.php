@@ -27,7 +27,7 @@ class mtWidgetFormEmbedRenderer
   static public $decoratorToolbarString = '
 <div class="mtWidgetFormEmbedToolbar">
   %toolbar_buttons%
-  <div id="mtWidgetFormEmbedAjaxLoader" style="display: none;">
+  <div class="mtWidgetFormEmbedAjaxLoader" style="display: none;">
     %ajax-loader-string%
   </div>
 </div>';

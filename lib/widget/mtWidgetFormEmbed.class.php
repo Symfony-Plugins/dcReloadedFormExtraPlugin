@@ -136,12 +136,36 @@ class mtWidgetFormEmbed extends sfWidgetForm
     return call_user_func_array(array($class, $method), $args);
   }
 
+  public function getChoices($value)
+  {
+    $values = $this->getValue($value);
+    if (count($values) > 0)
+    {
+      return array_combine($values, $values);
+    }
+    return array();
+  }
+
+  public function getValue($value)
+  {
+    if (empty($value) || is_null($value) || !is_array($value))
+    {
+      $value = array();
+      for ($i=0;$i<count($this->embeddedForms);$i++)
+      {
+        $value[$i] = $i;
+      }
+    }
+    return $value;
+  }
+
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
-    $id = $this->generateId($name);
+    $id    = $this->generateId($name);
+    $value = !is_array($value)? array() : $value;
 
-    $choiceWidget = new sfWidgetFormSelectMany(array('choices' => array_combine($value, $value), 'is_hidden' => true), array('style' => 'display: none'));
-    $choiceHtml   = $choiceWidget->render($name, $value, $attributes, $errors);
+    $choiceWidget = new sfWidgetFormSelectMany(array('choices' => $this->getChoices($value), 'is_hidden' => true), array('style' => 'display: none'));
+    $choiceHtml   = $choiceWidget->render($name, $this->getValue($value), $attributes, $errors);
     $embeddedForm = $this->renderEmbeddedForms($name);
 
     $html = $this->renderDispatch('render',
@@ -319,12 +343,12 @@ class mtWidgetFormEmbed extends sfWidgetForm
                           complete: function (xhr, textStatus) {
                             jQuery('#wrapper_$id .mtWidgetFormEmbedWorkspace').append(xhr.responseText);
                             jQuery('#$id').append('<option selected=selected value='+count+'>'+count+'</option>');
-                            jQuery('#mtWidgetFormEmbedAjaxLoader').hide();
+                            jQuery('.mtWidgetFormEmbedAjaxLoader').hide();
                             ".$this->getOption('after-add-js')."
                           },
                           beforeSend: function(jqXhr, settings)
                           {
-                            jQuery('#mtWidgetFormEmbedAjaxLoader').show();
+                            jQuery('.mtWidgetFormEmbedAjaxLoader').show();
                           },
                           data: {
                                   'form_creation_method' : '".self::encode($this->getOption('form_creation_method'))."',
