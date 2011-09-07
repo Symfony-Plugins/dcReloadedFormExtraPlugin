@@ -291,32 +291,42 @@ class mtWidgetFormEmbed extends sfWidgetForm
   {
     if (in_array(sfContext::getInstance()->getRequest()->getMethod(), array(sfRequest::POST, sfRequest::PUT)))
     {
-      $preTaintedValues = $this->retrievePreTaintedValues();
-      $widgetName       = $this->generateId($widgetName);
-
-      if (is_array($preTaintedValues) && isset($preTaintedValues[$widgetName]) && count($preTaintedValues[$widgetName]) > 0)
-      {
-        foreach ($preTaintedValues[$widgetName] as $formName)
-        {
-          $newFormName = $this->getOption('child_form_name').'_'.$formName;
-          $form = call_user_func($this->getOption('form_creation_method'), $preTaintedValues[$newFormName], $this->getOption('form_creation_method_params'));
-          $form->getWidgetSchema()->setNameFormat($this->getOption('parent_form')->getName().'['.$newFormName.'][%s]');
-          $this->embedForm($form, $newFormName);
-        }
-      }
+      $this->embedFormsFromRequest($widgetName);
     }
     else
     {
-      $count = 0;
-      foreach ($this->getOption('objects') as $o)
+      $this->embedFormsFromObject($widgetName);
+    }
+  }
+
+  public function embedFormsFromObject($widgetName)
+  {
+    $count = 0;
+    foreach ($this->getOption('objects') as $o)
+    {
+      $form = call_user_func($this->getOption('edit_form_creation_method'), $o);
+      $newFormName = $this->getOption('child_form_name').'_'.$count;
+      $form->getWidgetSchema()->setNameFormat($this->getOption('parent_form')->getName().'['.$newFormName.'][%s]');
+      $this->embedForm($form, $newFormName);
+      $count++;
+    }
+    $this->choices = range(0, $count);
+  }
+
+  public function embedFormsFromRequest($widgetName)
+  {
+    $preTaintedValues = $this->retrievePreTaintedValues();
+    $widgetName       = $this->generateId($widgetName);
+
+    if (is_array($preTaintedValues) && isset($preTaintedValues[$widgetName]) && count($preTaintedValues[$widgetName]) > 0)
+    {
+      foreach ($preTaintedValues[$widgetName] as $formName)
       {
-        $form = call_user_func($this->getOption('edit_form_creation_method'), $o);
-        $newFormName = $this->getOption('child_form_name').'_'.$count;
+        $newFormName = $this->getOption('child_form_name').'_'.$formName;
+        $form = call_user_func($this->getOption('form_creation_method'), $preTaintedValues[$newFormName], $this->getOption('form_creation_method_params'));
         $form->getWidgetSchema()->setNameFormat($this->getOption('parent_form')->getName().'['.$newFormName.'][%s]');
         $this->embedForm($form, $newFormName);
-        $count++;
       }
-      $this->choices = range(0, $count);
     }
   }
 
