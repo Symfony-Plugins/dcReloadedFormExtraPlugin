@@ -268,12 +268,32 @@ class mtWidgetFormEmbed extends sfWidgetForm
     return array_merge(parent::getStyleSheets(), array($this->getOption('stylesheet') => 'all'));
   }
 
+  protected function retrievePreTaintedValues()
+  {
+    $parentName = str_replace(array(']'), array(''), $this->getOption('parent_form')->getName());
+
+    $preTaintedValues = array();
+    $parentNames = explode('[', $parentName);
+
+    if (strlen($parentName) > 0 && count($parentNames) > 0)
+    {
+      $preTaintedValues = sfContext::getInstance()->getRequest()->getParameter(array_shift($parentNames));
+      foreach ($parentNames as $name)
+      {
+        $preTaintedValues = isset($preTaintedValues[$name])? $preTaintedValues[$name] : array();
+      }
+    }
+
+    return $preTaintedValues;
+  }
+
   public function embedForms($widgetName)
   {
     if (in_array(sfContext::getInstance()->getRequest()->getMethod(), array(sfRequest::POST, sfRequest::PUT)))
     {
-      $preTaintedValues = sfContext::getInstance()->getRequest()->getParameter($this->getOption('parent_form')->getName(), array());
-      $widgetName = $this->generateId($widgetName);
+      $preTaintedValues = $this->retrievePreTaintedValues();
+      $widgetName       = $this->generateId($widgetName);
+
       if (is_array($preTaintedValues) && isset($preTaintedValues[$widgetName]) && count($preTaintedValues[$widgetName]) > 0)
       {
         foreach ($preTaintedValues[$widgetName] as $formName)
@@ -332,6 +352,9 @@ class mtWidgetFormEmbed extends sfWidgetForm
       'delete-button-image' => array('image' => $this->getOption('delete-button-image'), 'text' => $this->getOption('delete-button-text'))
     );
 
+    $afterDeleteJs = $this->getOption('after-delete-js');
+    $afterAddJs    = $this->getOption('after-add-js');
+
     return "
       var count = 0;
       if (jQuery('#$id').find('option').length > 0)
@@ -343,12 +366,12 @@ class mtWidgetFormEmbed extends sfWidgetForm
                           complete: function (xhr, textStatus) {
                             jQuery('#wrapper_$id .mtWidgetFormEmbedWorkspace').append(xhr.responseText);
                             jQuery('#$id').append('<option selected=selected value='+count+'>'+count+'</option>');
-                            jQuery('.mtWidgetFormEmbedAjaxLoader').hide();
-                            ".$this->getOption('after-add-js')."
+                            jQuery('#wrapper_$id .mtWidgetFormEmbedAjaxLoader').hide();
+                            {$afterAddJs}
                           },
                           beforeSend: function(jqXhr, settings)
                           {
-                            jQuery('.mtWidgetFormEmbedAjaxLoader').show();
+                            jQuery('#wrapper_$id .mtWidgetFormEmbedAjaxLoader').show();
                           },
                           data: {
                                   'form_creation_method' : '".self::encode($this->getOption('form_creation_method'))."',
@@ -361,7 +384,7 @@ class mtWidgetFormEmbed extends sfWidgetForm
                                   'images' : '".self::encode($images)."',
                                   'renderer_class' : '".$this->getOption('renderer_class')."',
                                   'form_formatter' : '".self::encode($this->getOption('form_formatter'))."',
-                                  'after_delete_js' : '".self::encode($this->getOption('after-delete-js'))."'
+                                  'after_delete_js' : '".self::encode($afterDeleteJs)."'
                                 },
                           url: '".url_for('dc_ajax/mtWidgetFormEmbedAdd')."'
                         });";
