@@ -124,9 +124,9 @@ class dc_ajaxActions extends sfActions
     if ($order = $this->options['order_by'])
     {
       $method = sprintf('add%sOrderByColumn', 0 === strpos(strtoupper($order[1]), 'ASC') ? 'Ascending' : 'Descending');
-      $criteria->$method(call_user_func(array($class, 'translateFieldName'), $order[0], BasePeer::TYPE_PHPNAME, BasePeer::TYPE_COLNAME));
+      $criteria->$method(call_user_func(array($class, 'translateFieldName'), sfInflector::camelize($order[0]), BasePeer::TYPE_PHPNAME, BasePeer::TYPE_COLNAME));
     }
-
+    
     $this->total_objects = call_user_func(array($class, 'doCount'), $criteria, $this->options['connection']);
 
     if (isset($this->options['limit']))
@@ -135,7 +135,7 @@ class dc_ajaxActions extends sfActions
       $criteria->setLimit($this->limit);
       $criteria->setOffset($this->page * $this->limit);
     }
-
+    
     $this->objects = call_user_func(array($class, $this->options['peer_method']), $criteria, $this->options['connection']);
 
     $this->methodKey = $this->options['key_method'];
