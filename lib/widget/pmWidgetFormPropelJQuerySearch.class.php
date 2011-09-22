@@ -46,9 +46,11 @@ class pmWidgetFormPropelJQuerySearch extends pmWidgetFormJQuerySearch
   
   public function getValueString($value)
   {
+    if(is_null($value)){
+      return '';
+    }
     $class = constant($this->getOption("model")."::PEER");      
     $object = call_user_func(array($class,  $this->getOption('retrieve_object_method')), $value);
-    
     $method = $this->getOption("method");
     
     return !is_null($object) ? parent::getValueString($object->$method()) : "";

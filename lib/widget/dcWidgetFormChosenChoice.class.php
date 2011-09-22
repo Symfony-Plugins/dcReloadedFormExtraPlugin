@@ -25,7 +25,7 @@ class dcWidgetFormChosenChoice extends sfWidgetFormChoice {
 
   public static function getJavaScriptsIncludes()
   {
-    return array("/dcReloadedFormExtraPlugin/js/chosen.jquery.min.js");
+    return array("/dcReloadedFormExtraPlugin/js/chosen.jquery.js");
   }
 
   public static function getStylesheetsIncludes()
@@ -39,18 +39,19 @@ class dcWidgetFormChosenChoice extends sfWidgetFormChoice {
     $widget->addOption('default_text', null);
   }
 
-  public static function getWidgetInitializationJS($id, $value)
+  public static function getWidgetInitializationJS($id, $value, $default_text)
   {
     $tpl = <<<EOF
 <script>
   jQuery(document).ready(function(){
-    jQuery("#%widget_id%").chosen({no_results_text: '%no_results_text%'});
+    jQuery("#%widget_id%").chosen({no_results_text: '%no_results_text%', default_text:'%default_text%'});
   });
 </script>
 EOF;
     return strtr($tpl, array(
       "%widget_id%" => $id,
-      "%no_results_text%" => sfContext::getInstance()->getI18N()->__("No results match")
+      "%no_results_text%" => sfContext::getInstance()->getI18N()->__("No results match"),
+      "%default_text%" => $default_text
     ));
   }
 
@@ -71,10 +72,10 @@ EOF;
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
     $default_text = $this->getOption('default_text', null);
     if($default_text){
-      $attributes['data-placeholder'] = __($default_text);
+      $default_text = __($default_text);
     }
     else{
-      $attributes['data-placeholder'] = $this->getOption('multiple')?__("Select Some Options").'...':__("Select an Option").'...';
+      $default_text = $this->getOption('multiple')?__("Select Some Options").'...':__("Select an Option").'...';
     }
     $align_right = $this->getOption('align_right', null);
     if($align_right){
@@ -90,7 +91,7 @@ EOF;
       $attributes['style'] = '; min-width: 300px; max-width: 700px;';
     }
     $html = parent::render($name, $value, $attributes, $errors);
-    $html .= dcWidgetFormChosenChoice::getWidgetInitializationJS($this->generateId($name), $value);
+    $html .= dcWidgetFormChosenChoice::getWidgetInitializationJS($this->generateId($name), $value, $default_text);
     return $html;
   }
 }

@@ -41,10 +41,10 @@ class dcWidgetFormDoctrineChosenChoice extends sfWidgetFormDoctrineChoice {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
     $default_text = $this->getOption('default_text', null);
     if($default_text){
-      $attributes['data-placeholder'] = __($default_text);
+      $default_text = __($default_text);
     }
     else{
-      $attributes['data-placeholder'] = $this->getOption('multiple')?__("Select Some Options").'...':__("Select an Option").'...';
+      $default_text = $this->getOption('multiple')?__("Select Some Options").'...':__("Select an Option").'...';
     }
     $align_right = $this->getOption('align_right', null);
     if($align_right){
@@ -60,7 +60,7 @@ class dcWidgetFormDoctrineChosenChoice extends sfWidgetFormDoctrineChoice {
       $attributes['style'] = '; min-width: 300px; max-width: 700px;';
     }
     $html = parent::render($name, $value, $attributes, $errors);
-    $html .= dcWidgetFormChosenChoice::getWidgetInitializationJS($this->generateId($name), $value);
+    $html .= dcWidgetFormChosenChoice::getWidgetInitializationJS($this->generateId($name), $value, $default_text);
     return $html;
   }
 }

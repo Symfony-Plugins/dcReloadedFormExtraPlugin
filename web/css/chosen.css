@@ -331,4 +331,12 @@
   background: url('../images/chosen-sprite.png') no-repeat -38px -20px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
   padding: 4px 5px 4px 20px;
 }
+
+a.chzn-single span {
+  font-weight: bold;
+}
+
+a.chzn-single span.chzn-default-text {
+  font-weight: normal !important;
+}
 /* @end */
