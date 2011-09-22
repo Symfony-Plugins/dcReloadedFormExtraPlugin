@@ -4,11 +4,11 @@
 
   <ul id="jquery_search_results">
     <?php foreach ($objects as $result): ?>
-      <li id="result_<?php echo $result->getId() ?>">
+      <li id="result_<?php echo $result->$methodKey() ?>">
         <?php echo $result ?>
 
-        <script>
-    	    <?php echo $js_var_name ?>.getSelectLink(<?php echo $result->getId() ?>, "<?php echo $result ?>");
+        <script>          
+    	    <?php echo $js_var_name ?>.getSelectLink(<?php echo $result->$methodKey() ?>, "<?php echo $result ?>");
         </script>
     
       </li>

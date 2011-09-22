@@ -78,7 +78,7 @@ EOF
    * @see sfWidgetForm
    */
   public function render($name, $value = null, $attributes = array(), $errors = array())
-  {
+  {    
     $search_template = $this->getOption("search_template");
     $value_widget = $this->getOption("value_widget");
     $search_widget = $this->getOption("search_widget");

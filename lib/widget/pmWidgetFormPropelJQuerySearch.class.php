@@ -35,6 +35,7 @@ class pmWidgetFormPropelJQuerySearch extends pmWidgetFormJQuerySearch
     $this->addRequiredOption('column');
     $this->addOption('method', '__toString');
     $this->addOption('key_method', 'getPrimaryKey');
+    $this->addOption('retrieve_object_method', 'retrieveByPk');
     $this->addOption('order_by', null);
     $this->addOption('criteria', null);
     $this->addOption('connection', null);
@@ -45,9 +46,8 @@ class pmWidgetFormPropelJQuerySearch extends pmWidgetFormJQuerySearch
   
   public function getValueString($value)
   {
-    $class = constant($this->getOption("model")."::PEER");
-    
-    $object = call_user_func(array($class, "retrieveByPk"), $value);
+    $class = constant($this->getOption("model")."::PEER");      
+    $object = call_user_func(array($class,  $this->getOption('retrieve_object_method')), $value);
     
     $method = $this->getOption("method");
     

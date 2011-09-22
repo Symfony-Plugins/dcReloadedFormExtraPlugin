@@ -7,7 +7,7 @@
       <li id="result_<?php echo $result->getId() ?>">
         <?php echo $result ?>
 
-        <script>
+        <script>          
     	    <?php echo $js_var_name ?>.getSelectLink(<?php echo $result->getId() ?>, "<?php echo $result ?>");
         </script>
     
