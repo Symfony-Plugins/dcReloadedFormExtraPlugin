@@ -339,4 +339,8 @@ a.chzn-single span {
 a.chzn-single span.chzn-default-text {
   font-weight: normal !important;
 }
+
+ul.chzn-results .active-result {
+  line-height: 15px !important;
+}
 /* @end */
