@@ -53,7 +53,8 @@ function pmWidgetFormJQuerySearch()
   
   this.getSelectLink = function(value, text)
   {
-    value = parseInt(value);
+    // commented out because we may want to select something with an string as the id
+    //value = parseInt(value);
     instance = this;
     jQuery("<a><img src='"+eval(this.js_var_name+".select_image")+"'/></a>")
     	.click(function ()
