@@ -45,9 +45,12 @@ class mbWidgetFormChosenChoice extends sfWidgetFormSelect
     }
     else
     {
-      $text = $this->getOption('multiple') ? 'Select Some Option' : 'Select Some Options';
+      $text = $this->getOption('multiple') ? 'Select Some Options' : 'Select Some Option';
       $attributes['data-placeholder'] = $this->translate($text);
     }
+    
+    $no_results_text = $this->getOption('no_results_text') ? $this->getOption('no_results_text') : 'No results matches';
+    $this->setOption('no_results_text', $this->translate($no_results_text));
     
     $rendered_widget = parent::render($name, $value, $attributes, $errors);
     
@@ -90,7 +93,7 @@ class mbWidgetFormChosenChoice extends sfWidgetFormSelect
       {
         if (is_string($this->getOption($opt)))
         {
-          $value = $this->translate($this->getOption($opt));
+          $value = '"'.$this->translate($this->getOption($opt)).'"';
         }
         elseif (is_bool($this->getOption($opt)))
         {

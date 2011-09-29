@@ -6,6 +6,12 @@
   zoom: 1;
   *display: inline;
 }
+
+.chzn-container a
+{
+  text-decoration: none !important;
+}
+
 .chzn-container .chzn-drop {
   background: #fff;
   border: 1px solid #aaa;
@@ -57,6 +63,21 @@
   -ms-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
+.chzn-container-single .chzn-single abbr {
+  display: block;
+  position: absolute;
+  right: 26px;
+  top: 8px;
+  width: 12px;
+  height: 13px;
+  font-size: 1px;
+  background: url(../images/chosen-sprite.png) right top no-repeat !important;
+  cursor: default;
+  border-bottom: none;
+}
+.chzn-container-single .chzn-single abbr:hover {
+  background-position: right -11px;
+}
 .chzn-container-single .chzn-single div {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius   : 0 4px 4px 0;
@@ -93,13 +114,13 @@
 }
 .chzn-container-single .chzn-search input {
   background: #fff url('../images/chosen-sprite.png') no-repeat 100% -20px !important;
-  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee))!important;
-  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%)!important;
-  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%)!important;
-  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%)!important;
-  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%)!important;
-  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%)!important;
-  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, linear-gradient(top, #ffffff 85%,#eeeeee 99%)!important;
+  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee)) !important;
+  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat 100% -20px, linear-gradient(top, #ffffff 85%,#eeeeee 99%) !important;
   margin: 1px 0;
   padding: 4px 20px 4px 5px;
   outline: 0;
@@ -191,18 +212,18 @@
 .chzn-container-multi .chzn-choices .search-choice .search-choice-close {
   display: block;
   position: absolute;
-  right: 5px;
-  top: 6px;
-  width: 8px;
-  height: 9px;
+  right: 3px;
+  top: 4px;
+  width: 12px;
+  height: 13px;
   font-size: 1px;
   background: url(../images/chosen-sprite.png) right top no-repeat !important;
 }
 .chzn-container-multi .chzn-choices .search-choice .search-choice-close:hover {
-  background-position: right -9px;
+  background-position: right -11px;
 }
 .chzn-container-multi .chzn-choices .search-choice-focus .search-choice-close {
-  background-position: right -9px;
+  background-position: right -11px;
 }
 /* @end */
 
@@ -303,6 +324,18 @@
 }
 /* @end */
 
+/* @group Disabled Support */
+.chzn-disabled {
+  cursor: default;
+  opacity:0.5 !important;
+}
+.chzn-disabled .chzn-single {
+  cursor: default;
+}
+.chzn-disabled .chzn-choices .search-choice .search-choice-close {
+  cursor: default;
+}
+
 /* @group Right to Left */
 .chzn-rtl { direction:rtl;text-align: right; }
 .chzn-rtl .chzn-single { padding-left: 0; padding-right: 8px; }
@@ -321,26 +354,14 @@
 .chzn-rtl .chzn-results .group-option { padding-left: 0; padding-right: 20px; }
 .chzn-rtl.chzn-container-active .chzn-single-with-drop div { border-right: none; }
 .chzn-rtl .chzn-search input {
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, #ffffff;
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);  
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%);
-  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, linear-gradient(top, #ffffff 85%,#eeeeee 99%);
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, #ffffff !important;
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee)) !important;
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, -ms-linear-gradient(top, #ffffff 85%,#eeeeee 99%) !important;
+  background: url('../images/chosen-sprite.png') no-repeat -38px -20px, linear-gradient(top, #ffffff 85%,#eeeeee 99%) !important;
   padding: 4px 5px 4px 20px;
-}
-
-a.chzn-single span {
-  font-weight: bold;
-}
-
-a.chzn-single span.chzn-default-text {
-  font-weight: normal !important;
-}
-
-ul.chzn-results .active-result {
-  line-height: 15px !important;
 }
 /* @end */
