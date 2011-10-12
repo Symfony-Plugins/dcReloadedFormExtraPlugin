@@ -17,12 +17,12 @@ class mbWidgetFormChosenChoice extends sfWidgetFormSelect
   protected function configure($options = array(), $attributes = array())
   {
     parent::configure($options, $attributes);
-    
-    $this->addOption('default_text', null);
+
+    $this->addOption('default_text', false);
     $this->addOption('no_results_text', null);
     $this->addOption('allow_single_deselect', false);
   }
-  
+
   /**
    * Renders the widget.
    *
@@ -38,8 +38,8 @@ class mbWidgetFormChosenChoice extends sfWidgetFormSelect
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
     $attributes['class'] = 'chzn-select';
-    
-    if ($default_text = $this->getOption('default_text'))
+
+    if (false !== ($default_text = $this->getOption('default_text')))
     {
       $attributes['data-placeholder'] = $this->translate($default_text);
     }
@@ -48,18 +48,18 @@ class mbWidgetFormChosenChoice extends sfWidgetFormSelect
       $text = $this->getOption('multiple') ? 'Select Some Options' : 'Select Some Option';
       $attributes['data-placeholder'] = $this->translate($text);
     }
-    
+
     $no_results_text = $this->getOption('no_results_text') ? $this->getOption('no_results_text') : 'No results matches';
     $this->setOption('no_results_text', $this->translate($no_results_text));
-    
+
     $rendered_widget = parent::render($name, $value, $attributes, $errors);
-    
+
     return strtr('%rendered_widget%%chosen_initialization%', array(
       '%rendered_widget%' => $rendered_widget,
       '%chosen_initialization%' => $this->getChosenInitialization($this->generateId($name))
     ));
   }
-  
+
   /**
    * Gets the JavaScript paths associated with the widget.
    *
@@ -102,15 +102,15 @@ class mbWidgetFormChosenChoice extends sfWidgetFormSelect
         $opts[] = $opt.': '.$value;
       }
     }
-    
+
     $options_str = !empty($opts) ? '{'.implode(', ', $opts).'}' : '';
-    
+
     $js = <<<EOF
-<script>
-  $('#%s.chzn-select').chosen(%s);
+<script type="text/javascript">
+  jQuery('#%s.chzn-select').chosen(%s);
 </script>
 EOF;
-    
+
     return sprintf($js, $id, $options_str);
   }
 }
