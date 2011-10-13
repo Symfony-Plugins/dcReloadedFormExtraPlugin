@@ -202,11 +202,61 @@ Widgets that embeds a dinamic number of forms. This widget only does the 'view' 
 
 Represents an Argetine CUIL/CUIT
 
+### alWdigetFormTimepicker
+
+Represents an Hour or also an Hour range.
+
+This widget is a wrapper for a jQueryUITimepicker (http://fgelinas.com/code/timepicker/).
+
+##### Usage
+
+The javascript widget can be configured in many ways, so you could define an
+associative array of key -> value (available options defined on author page or
+on this widget implementantion) to give values to it. Also, it allows to create
+ingle or range time values.
+
+    For a single time value all you need is:
+
+    [php]
+    $this->setWidget("single_hour", new alWidgetFormTimepicker(array('config' => array('jquery_widget_option_key' => 'jquery_widget_option_value')
+    )));
+    
+    For a range time value:
+
+    [php]
+    $this->setWidget("range_hour", new alWidgetFormTimepicker(array('config' => array('jquery_widget_option_key' => 'jquery_widget_option_value'),
+                                                              'enable_timerange' => true
+    )));
+
+    Note: remember than this widget uses the alValidatorTimepicker validator, and it should be configured wheter the value is single or range. 
+    Check for in the validator section for further explanation on this matters.
+
 ## Validators
 
 ### mtValidatorDateString
 
 Validates dates represented as strings.
+
+### alValidatorTimepicker
+
+Validates single or range hour as strings.
+
+It accepts an option called enable_timerange (by default set to false), that when its set to true, will be expecting a string
+that looks like this: "HH:MM-HH:MM". Otherwise, it will validate a single value like "HH:MM".
+
+  Ex:
+    Range value
+    [php]
+    $this->setValidator("range_hour", new alValidatorTimepicker(array('enable_timerange' => true)));
+
+    Single value
+    [php]
+    $this->setValidator("single_hour", new alValidatorTimepicker(array('enable_timerange' => false)));
+
+    or
+
+    $this->setValidator("single_hour", new alValidatorTimepicker());
+
 
 ### mtValidatorCuil
 
