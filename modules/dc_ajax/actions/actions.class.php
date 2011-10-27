@@ -202,4 +202,33 @@ class dc_ajaxActions extends sfActions
     return '';
   }
   
+  public function executePmWidgetFormPropelInputByCode(sfWebRequest $request)
+  {
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
+    
+    $code = $request->getParameter('code');
+    
+    $widget_options = unserialize($request->getParameter('serialized_widget_options'));
+    
+    $model = $widget_options['model'];
+    $column = $widget_options['column'];
+    $criteria = $widget_options['criteria'];
+    $method = $widget_options['method'];
+    $peer_method = $widget_options['peer_method'];
+    $object_not_found_text = $widget_options['object_not_found_text'];
+    $object_not_found_text = __($object_not_found_text);
+    
+    if (is_null($criteria))
+    {
+      $criteria = new Criteria();
+    }
+    
+    $criteria->add(constant($model.'Peer::'.strtoupper($column)), $code);
+    
+    $object = call_user_func(array($model.'Peer', $peer_method), $criteria);
+    
+    $text = !is_null($object) ? $object->$method() : $object_not_found_text;
+    
+    return $this->renderText("<span class=\"label ".(is_null($object) ? "not-" : "")."found\">$text</span>");
+  }
 }

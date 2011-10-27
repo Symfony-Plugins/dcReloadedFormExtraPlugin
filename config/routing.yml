@@ -22,3 +22,6 @@ dc_widget_form_activator:
   url:  /dc_widget_form_activator
   param: { module: dc_ajax, action: dcWidgetFormActivator }
 
+pm_widget_form_propel_input_by_code:
+  url: /pm_widget_form_propel_input_by_code
+  param: { module: dc_ajax, action: pmWidgetFormPropelInputByCode }
