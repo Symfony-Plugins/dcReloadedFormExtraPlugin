@@ -231,4 +231,40 @@ class dc_ajaxActions extends sfActions
     
     return $this->renderText("<span class=\"label ".(is_null($object) ? "not-" : "")."found\">$text</span>");
   }
+  
+  public function executePmWidgetFormPropelJQueryTokeninput(sfWebRequest $request)
+  {
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
+    
+    $q = $request->getParameter('q');
+    
+    $widget_options = unserialize(base64_decode($request->getParameter('serialized_widget_options')));
+    
+    $model = $widget_options['model'];
+    $column = $widget_options['column'];
+    $criteria = $widget_options['criteria'];
+    $method = $widget_options['method'];
+    $peer_method = $widget_options['peer_method'];
+    $key_method = $widget_options['key_method'];
+    
+    if (is_null($criteria))
+    {
+      $criteria = new Criteria();
+    }
+    
+    $criteria->add(constant($model.'Peer::'.strtoupper($column)), "%$q%", Criteria::LIKE);
+    
+    $objects = call_user_func(array($model.'Peer', $peer_method), $criteria);
+    
+    $results = array();
+    foreach ($objects as $object)
+    {
+      $results[] = array(
+        'id' => $object->$key_method(),
+        'name' => strval($object)
+      );
+    }
+    
+    return $this->renderText(json_encode($results));
+  }
 }

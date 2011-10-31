@@ -24,8 +24,6 @@
 	    
 	    initial_code = $('#'+id).val();
 	    
-	    console.log(initial_code);
-	    
 	    if (initial_code != '')
 	    {
 	      $(this).get_value_for_code(url, serialized_widget_options);

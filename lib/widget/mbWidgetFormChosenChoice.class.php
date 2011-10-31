@@ -37,16 +37,19 @@ class mbWidgetFormChosenChoice extends sfWidgetFormSelect
    */
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
+    sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
+    
     $attributes['class'] = 'chzn-select';
 
     if (false !== ($default_text = $this->getOption('default_text')))
     {
-      $attributes['data-placeholder'] = $this->translate($default_text);
+      $attributes['data-placeholder'] = __($default_text);
     }
     else
     {
       $text = $this->getOption('multiple') ? 'Select Some Options' : 'Select Some Option';
-      $attributes['data-placeholder'] = $this->translate($text);
+      
+      $attributes['data-placeholder'] = __($text);
     }
 
     $no_results_text = $this->getOption('no_results_text') ? $this->getOption('no_results_text') : 'No results matches';

@@ -25,3 +25,7 @@ dc_widget_form_activator:
 pm_widget_form_propel_input_by_code:
   url: /pm_widget_form_propel_input_by_code
   param: { module: dc_ajax, action: pmWidgetFormPropelInputByCode }
+
+pm_widget_form_propel_jquery_tokeninput:
+  url: /pm_widget_form_propel_jquery_tokeninput
+  param: { module: dc_ajax, action: pmWidgetFormPropelJQueryTokeninput }
