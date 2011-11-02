@@ -298,7 +298,7 @@ JAVASCRIPT;
     }
 
     $form->getWidgetSchema()->setNameFormat('dc_widget_form_finder[%s]');
-    $form->disableCSRFProtection();
+    //$form->disableCSRFProtection();
 
     return $form;
   }
