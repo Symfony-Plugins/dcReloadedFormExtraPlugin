@@ -123,7 +123,7 @@ HTML;
           $content .= $this->renderContentTag('option', $val, array('selected' => true, 'value' => $val));
         }
       }      
-      return $this->renderContentTag('select', $content, array('id' => $this->generateId($name), 'name' => $name. '[]', 'multiple' => true, 'hidden' => true));
+      return $this->renderContentTag('select', $content, array('id' => $this->generateId($name), 'name' => $name. '[]', 'multiple' => true, 'style' => 'display: none'));
     }
     else
     {
