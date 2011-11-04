@@ -15,10 +15,10 @@ class pmWidgetFormPropelJQueryTokeninput extends sfWidgetFormPropelChoice
     $this->addOption('multiple', false);
     $this->addOption('peer_method', 'doSelect');
     $this->addOption('config', '{}');
-    
+
     parent::configure($options, $attributes);
   }
-  
+
   public function render($name, $value = null, $attributes = array(), $errors = array())
   {
     $template = <<<EOF
@@ -31,8 +31,10 @@ $('#%id%_tokeninput').tokenInput('%url%', $.extend(
     onAdd: function(item)
     {
       $('#%id%').val(item.id);
-      
+
       count = $('#%id%_tokeninput').prev().children('[class^=token-input-token]').length;
+
+      $('#%id%').change();
       
       if (count > 1)
       {
@@ -48,18 +50,18 @@ $('#%id%_tokeninput').tokenInput('%url%', $.extend(
 EOF;
 
     $default_value_template = "$('#%id%_tokeninput').tokenInput('add', { id: %value_id%, name: \"%value_string%\" });";
-    
+
     if (!is_null($default_value_template))
     {
       $object = call_user_func(array($this->getOption('model').'Peer', $this->getOption('retrieve_method')), $value);
-      
+
       $default_value_template = strtr($default_value_template, array(
         '%id%' => $this->generateId($name),
         '%value_id%' => $value,
         '%value_string%' => strval($object)
       ));
     }
-    
+
     return strtr($template, array(
       '%id%' => $this->generateId($name),
       '%name%' => $name,
@@ -68,12 +70,12 @@ EOF;
       '%default_value_template%' => is_null($value) ? '' : $default_value_template
     ));
   }
-  
+
   public function getJavaScripts()
   {
     return array_merge(parent::getJavaScripts(), array('/dcReloadedFormExtraPlugin/js/jquery.tokeninput.js'));
   }
-  
+
   public function getStylesheets()
   {
     return array_merge(parent::getStylesheets(), array(
