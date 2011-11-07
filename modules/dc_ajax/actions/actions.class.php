@@ -267,4 +267,251 @@ class dc_ajaxActions extends sfActions
     
     return $this->renderText(json_encode($results));
   }
+
+ /*************************************************************************************************
+  * crJsTree related actions and functions
+  ************************************************************************************************/
+ /**
+  * Validates security token
+  * 
+  * @return boolean
+  */
+  private function validateCrJsTreePropelSecurityToken(sfWebRequest $request ) {
+    $security_token         = $this->decodeCrJsTreePropel( $request->getParameter('security_token'));
+    $operation              = $this->decodeCrJsTreePropel( $request->getParameter('operation'));
+    $peer_class             = $this->decodeCrJsTreePropel( $request->getParameter('peer_class'));
+    $peer_parent_id_column  = $this->decodeCrJsTreePropel( $request->getParameter('peer_parent_id_column'));
+    $peer_id_column         = $this->decodeCrJsTreePropel( $request->getParameter('peer_id_column'));
+    $criteria_serialized    = $this->decodeCrJsTreePropel( $request->getParameter('criteria'));
+    $peer_method            = $this->decodeCrJsTreePropel( $request->getParameter('peer_method'));
+    $peer_count_method      = $this->decodeCrJsTreePropel( $request->getParameter('peer_count_method'));
+    $peer_to_string_method  = $this->decodeCrJsTreePropel( $request->getParameter('peer_to_string_method'));
+    return crWidgetFormJsTreeAjaxPropel::getSecurityToken($peer_class, $peer_parent_id_column, $peer_id_column, $criteria_serialized, $peer_method, $peer_count_method, $peer_to_string_method) == $security_token;
+  }
+
+ /**
+  * decode crJsTreePropel data sent by widget
+  *
+  * @return string
+  */
+  private function decodeCrJsTreePropel($value) {
+    return base64_decode($value);
+  }
+
+ /**
+  * decode crJsTreePropelMerge data sent by widget
+  *
+  * @return string
+  */
+  private function decodeCrJsTreePropelMerge($value) {
+    return unserialize(base64_decode($value));
+  }
+
+ /**
+  * Prepare CrJsTreePropelNodes adding fields as expected by jsTree:
+  *   array(
+  *     'data'  => 'string name of node',
+  *     'attr'  => array( 'id' => node_id ),
+  *     'state' => 'closed' //only if has children
+  *   );
+  * Data is returned as array so it can be converted to json using json_encode
+  *
+  * @return array
+  */
+  private function prepareCrJsTreePropelNodes(
+    array $array, 
+      $peer_class, 
+      $peer_parent_id_column, 
+      $peer_id_column, 
+      $criteria, 
+      $peer_method, 
+      $peer_count_method,
+      $peer_to_string_method ) {
+    $ret=array();
+    $tableMap = call_user_func(array($peer_class, 'getTableMap'));
+    foreach ($array as $o)
+    {
+        $getId = 'get' . $tableMap->getColumn($peer_id_column)->getPhpName();
+        $new = array( "data" => call_user_func(array($o,$peer_to_string_method)) , 'attr'=>array('id'=> $o->$getId()));
+        $c = clone $criteria;
+        $c->addAnd(constant($peer_class.'::'.$peer_parent_id_column), $o->$getId());
+        if ( call_user_func( array( $peer_class, $peer_count_method), $c)  > 0 )
+        {
+          $new ['state']= 'closed';
+        }
+        $ret[]=$new;
+    }
+    return $ret;
+  }
+    
+ /**
+  * Return one level of the tree from received $parent_id node
+  *
+  * @param int $parent_id                   id of parent selected node. This id was clicked and we have to return its children 
+  * @param string $peer_class               Peer class to use. For example: PersonPeer
+  * @param string $peer_parent_id_column    Column of $peer_class that relates with parent node
+  * @param string $peer_id_column           ID column of $peer_class
+  * @param Criteria $criteria               Criteria object use for retrieving nodes (sorting, prefiltering, etc)
+  * @param string $peer_method              Peer select method. Defaults to doSelect
+  * @param string $peer_count_method        Peer count method. Defaults to doCount
+  * @param string $peer_to_string_method    Peer instance toString method. Defaults to __toString
+  * @param string $related_by_column        In case of merging node types (@see crWidgetFormJsTreeAjaxPropelMerge), this is the column to
+  *                                         be used to select nodes depending of other nodes
+  * @return array
+  */
+  private function getCrJsTreePropelAsOneLevelHierarchy(
+      $parent_id, 
+      $peer_class,  
+      $peer_parent_id_column, 
+      $peer_id_column, 
+      $criteria, 
+      $peer_method, 
+      $peer_count_method,
+      $peer_to_string_method,
+      $related_by_column = null
+      ) {
+
+    $c= clone $criteria;
+    if ( $parent_id == null) {
+      $c->addAnd(constant($peer_class.'::'.$peer_parent_id_column), null, Criteria::ISNULL);
+    }
+    else {
+      $c->addAnd(constant($peer_class.'::'.($related_by_column == null ?$peer_parent_id_column: $related_by_column)), $parent_id);
+    }
+    return $this->prepareCrJsTreePropelNodes( 
+      call_user_func( array( $peer_class, $peer_method), $c), 
+      $peer_class,  
+      $peer_parent_id_column, 
+      $peer_id_column,
+      $criteria, 
+      $peer_method, 
+      $peer_count_method,
+      $peer_to_string_method
+    );
+  }
+
+  /* XHR action to retrieve nodes for crJsTreePropel widget */
+  public function executeCrJsTreePropel(sfWebRequest $request) {
+
+    if ($request->isMethod('post') ) {
+
+      /* Is a valid request or it was modified by hand? */
+      if ( $this->validateCrJsTreePropelSecurityToken( $request)) {
+
+        $security_token         = $this->decodeCrJsTreePropel( $request->getParameter('security_token'));
+        $peer_class             = $this->decodeCrJsTreePropel( $request->getParameter('peer_class'));
+        $peer_parent_id_column  = $this->decodeCrJsTreePropel( $request->getParameter('peer_parent_id_column'));
+        $peer_id_column         = $this->decodeCrJsTreePropel( $request->getParameter('peer_id_column'));
+        $criteria               = unserialize($this->decodeCrJsTreePropel( $request->getParameter('criteria')));
+        $peer_method            = $this->decodeCrJsTreePropel( $request->getParameter('peer_method'));
+        $peer_count_method      = $this->decodeCrJsTreePropel( $request->getParameter('peer_count_method'));
+        $peer_to_string_method  = $this->decodeCrJsTreePropel( $request->getParameter('peer_to_string_method'));
+        $operation              = $request->getParameter('operation');
+
+        switch ( $operation ) {
+          case 'get_children':
+            $id = $request->getParameter('node_id');
+            break;
+          case 'get_root':
+          default:
+            $id = null;
+            break;
+        }
+        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($id, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $peer_method, $peer_count_method, $peer_to_string_method); 
+        return $this->renderText( json_encode($nodes));
+      }
+      else {
+        return $this->renderText( json_encode(array(array('data'=>'CrJsTreePropelSecurityToken violation', 'attr'=>array('id'=>-100)))));
+      }
+    }
+    return sfView::NONE;
+  }
+
+ /**
+  * Return one level of the tree from received $parent_id node considering possible merging of
+  * different nodes
+  *
+  * @return array
+  */
+  private function getCrJsTreePropelMergeAsOneLevelHierarchy(
+      $parent_id, 
+      $node_type,
+      $peer_class,  
+      $peer_parent_id_column, 
+      $peer_id_column, 
+      $criteria, 
+      $peer_method, 
+      $peer_count_method,
+      $peer_to_string_method, 
+      $peer_types, 
+      $peer_root_type, 
+      $peer_type_relationships) {
+
+    if ($parent_id == null ) {
+    /* in this case we have to get only root_nodes of type specified by $peer_root_type */
+        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$peer_root_type], $peer_parent_id_column[$peer_root_type], $peer_id_column[$peer_root_type], $criteria[$peer_root_type], $peer_method[$peer_root_type], $peer_count_method[$peer_root_type], $peer_to_string_method[$peer_root_type]); 
+        return array_map(  create_function('$node','$node["attr"]["rel"]="'.$peer_root_type.'"; return $node;'), $nodes);
+    }
+    else { 
+    /* if is not a root node, we have to: first get nodes of same type of calling node */
+        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type], $criteria[$node_type], $peer_method[$node_type], $peer_count_method[$node_type], $peer_to_string_method[$node_type]); 
+
+        $nodes = array_map(  create_function('$node','$node["attr"]["rel"]="'.$node_type.'"; return $node;'), $nodes);
+
+    /* Now we will check if there is a possible relation to get child nodes of different type */
+        if ( array_key_exists ($node_type, $peer_type_relationships) ) {
+
+          foreach ($peer_type_relationships[$node_type] as $name => $relationship) {
+            $node_type = $relationship['related_type'];
+            $related_nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type], $criteria[$node_type], $peer_method[$node_type], $peer_count_method[$node_type], $peer_to_string_method[$node_type], $relationship['by_column']); 
+            $nodes = array_merge ($nodes, array_map(  create_function('$node','$node["attr"]["rel"]="'.$node_type.'"; return $node;'), $related_nodes));
+          }
+        }
+        return $nodes;
+    }
+  }
+
+  /* XHR action to retrieve nodes for crJsTreePropelMerge widget */
+  public function executeCrJsTreePropelMerge(sfWebRequest $request) {
+
+    if ($request->isMethod('post') ) {
+
+      /* Is a valid request or it was modified by hand? */
+      if ( $this->validateCrJsTreePropelSecurityToken( $request)) {
+        $peer_class             = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_class'));
+        $peer_parent_id_column  = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_parent_id_column'));
+        $peer_id_column         = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_id_column'));
+        $criteria               = $this->decodeCrJsTreePropelMerge( $request->getParameter('criteria'));
+        $peer_method            = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_method'));
+        $peer_count_method      = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_count_method'));
+        $peer_to_string_method  = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_to_string_method'));
+        $peer_types             = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_types'));
+        $peer_root_type         = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_root_type'));
+        $peer_type_relationships= $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_type_relationships'));
+        $operation              = $request->getParameter('operation');
+
+        switch ( $operation ) {
+          case 'get_children':
+            $id = $request->getParameter('node_id');
+            $node_type = $request->getParameter('node_type');
+            break;
+          case 'get_root':
+          default:
+            $id = null;
+            $node_type = null;
+            break;
+        }
+        $nodes = $this->getCrJsTreePropelMergeAsOneLevelHierarchy($id,$node_type, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $peer_method, $peer_count_method, $peer_to_string_method, $peer_types, $peer_root_type, $peer_type_relationships); 
+        return $this->renderText( json_encode($nodes));
+      }
+      else {
+        return $this->renderText( json_encode(array(array('data'=>'CrJsTreePropelSecurityToken violation', 'attr'=>array('id'=>-100)))));
+      }
+    }
+    return sfView::NONE;
+  }
+ /*************************************************************************************************
+  * crJsTree related actions and functions
+  ************************************************************************************************/
+
 }

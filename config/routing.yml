@@ -29,3 +29,11 @@ pm_widget_form_propel_input_by_code:
 pm_widget_form_propel_jquery_tokeninput:
   url: /pm_widget_form_propel_jquery_tokeninput
   param: { module: dc_ajax, action: pmWidgetFormPropelJQueryTokeninput }
+
+crJsTreePropel:
+  url: /cr_jstree_propel
+  param: { module: dc_ajax, action: crJsTreePropel }
+
+crJsTreePropelMerge:
+  url: /cr_jstree_propel_merge
+  param: { module: dc_ajax, action: crJsTreePropelMerge  }
