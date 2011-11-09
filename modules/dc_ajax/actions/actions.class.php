@@ -514,4 +514,12 @@ class dc_ajaxActions extends sfActions
   * crJsTree related actions and functions
   ************************************************************************************************/
 
+  public function executeCrSelectableWidget(sfWebRequest $request) {
+    if ($request->isMethod('post') ) {
+      $widget = base64_decode($request->getParameter('widget'));
+      return $this->renderText($widget);
+    }
+    return sfView::NONE;
+  }
+
 }

@@ -37,3 +37,7 @@ crJsTreePropel:
 crJsTreePropelMerge:
   url: /cr_jstree_propel_merge
   param: { module: dc_ajax, action: crJsTreePropelMerge  }
+
+crSelectableWidget:
+  url: /cr_selectable_widget
+  param: { module: dc_ajax, action: crSelectableWidget  }

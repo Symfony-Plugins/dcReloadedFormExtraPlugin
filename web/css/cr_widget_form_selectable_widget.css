@@ -1,0 +1,27 @@
+.cr_selectable_widget ul.changer  {
+  margin: 0px;
+  background-color: #ccc;
+  border: 1px solid #888;
+}
+
+.cr_selectable_widget ul.changer li  {
+  display: inline-block;
+  list-style-type: none;
+  border-right: 1px solid #888;
+  margin: 0px;
+  padding: 0px;
+}
+
+.cr_selectable_widget ul.changer li a {
+  display: block;
+  text-decoration: none;
+  background: none !important;
+  display: block;
+  text-align: center;
+  padding: 5px !important;
+}
+
+.cr_selectable_widget ul.changer li .selected {
+  font-weight: bold;
+  background-color: #ddd !important;
+}
