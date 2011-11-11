@@ -33,6 +33,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
   *   * peer_id_column:         column name as string for access id objects of 
   *                             peer_class objects. Default value: ID
   *   * criteria:               Criteria object. Default value: new Criteria()
+  *   * root_nodes_criteria:    If this option is set, it will be used to retrieve root nodes.
   *   * peer_method:            method to retrieve objects: Default value doSelect
   *   * peer_count_method:      method to count objects: Default value doCount
   *   * peer_to_string_method:  method used to get text for each node. 
@@ -58,6 +59,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
     $this->addOption('peer_count_method', 'doCount'); 
     $this->addOption('peer_to_string_method', '__toString'); 
     $this->addOption('root_nodes_criteria', null); 
+    $this->addOption('get_type_callback', null); 
   }
 
  /**
@@ -109,6 +111,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
                 peer_method: "%peer_method%",
                 peer_count_method: "%peer_count_method%",
                 peer_to_string_method: "%peer_to_string_method%",
+                get_type_callback: "%get_type_callback%",
                    };
                 }',array(
               "%security_token%"            => $this->encode(crWidgetFormJsTreeAjaxPropel::getSecurityToken(
@@ -127,6 +130,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
               "%peer_count_method%"         => $this->encode($this->getOption('peer_count_method')),
               "%peer_to_string_method%"     => $this->encode($this->getOption('peer_to_string_method')),
               "%root_nodes_criteria%"       => $this->encode(serialize($this->getOption('root_nodes_criteria'))),
+              "%get_type_callback%"         => $this->encode(serialize($this->getOption('get_type_callback'))),
             ));
   }
 
