@@ -67,7 +67,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
     sfContext::getInstance()->getConfiguration()->loadHelpers(array('JavascriptBase'));
 
     $this->addRequiredOption('tree');
-    $this->addOption('clear_selection_icon',  image_tag('/dcReloadedFormExtraPlugin/images/close-action.png', array('alt'=>'delete', 'title' => 'delete'))); 
+    $this->addOption('clear_selection_icon',  image_tag('/sfPropelPlugin/images/delete.png', array('alt'=>'delete', 'title' => 'delete'))); 
     $this->addOption('no_value_text','Please select a value');
     $this->addOption('tree_options', new stdClass());
     $this->addOption('tree_plugins', '[ "themes", "ui", "json_data", "types" ]');
@@ -192,7 +192,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
    * @return string
    */
   protected function getJsTreeSelectEvent($this_id, $tree_id, $js_selected_node, $label_to_update) {
-    return strtr ("jQuery('#%me%').val(%selected_node%.data('id')); jQuery('#%label_to_update%').html(%selected_node%.children('a').text()).append(jQuery('<a>%clear_icon%</a>').click(function() {jQuery('#%tree_id%').jstree('deselect_all'); %deselect_js% }));",array(
+    return strtr ("jQuery('#%me%').val(%selected_node%.data('id')); jQuery('#%label_to_update%').html('<span class=\'label found\'>'+%selected_node%.children('a').text()+'</span>').append(jQuery('<a class=\'tree-clear\'>%clear_icon%</a>').click(function() {jQuery('#%tree_id%').jstree('deselect_all'); %deselect_js% }));",array(
           '%me%'              => $this_id, 
           '%tree_id%'         => $tree_id, 
           '%selected_node%'   => $js_selected_node,
@@ -208,7 +208,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
    * @return string
    */
   protected function getJsTreeDeSelectEvent($this_id, $label_to_update) {
-    return strtr ("jQuery('#%me%').val(''); jQuery('#%label_to_update%').html('%text_label%');",array(
+    return strtr ("jQuery('#%me%').val(''); jQuery('#%label_to_update%').html('<span class=\'label not-found\'>%text_label%</span>');",array(
           '%me%'            => $this_id, 
           '%label_to_update%' => $label_to_update,
           '%text_label%' => $this->getOption('no_value_text'),
@@ -245,6 +245,14 @@ class crWidgetFormJsTree extends sfWidgetForm {
   protected function getPrefix() {
     return 'cr_js_tree';
   }
+  
+  public function getStylesheets()
+  {
+    return array_merge(parent::getStylesheets(), array(
+      '/dcReloadedFormExtraPlugin/css/pm_widget_form_propel_input_by_code.css' => 'all',
+      '/dcReloadedFormExtraPlugin/css/cr_widget_form_js_tree.css' => 'all'
+    ));
+  }
 
  /**
    * Renders a HTML content tag.
@@ -259,7 +267,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
     $tree_container_id = sprintf("%s_tree_%s", $this->getPrefix(), $this->generateId($name));
     $hidden = new sfWidgetFormInputHidden();
     return 
-        strtr('<div>%hidden%<span id="%display_container%">%text%</span><div id="%tree_container%"></div></div>%script%',array(
+        strtr('<div>%hidden%<div id="%display_container%" class="treelabel"><span class="label not-found">%text%<span></div><div id="%tree_container%"></div></div>%script%',array(
               '%display_container%' => $display_container_id,
               '%text%'              => $value == null? $this->getOption('no_value_text'):'',
               '%hidden%'            => $hidden->render($name, $value, $attributes , $errors ),

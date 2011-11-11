@@ -365,6 +365,7 @@ class dc_ajaxActions extends sfActions
       $peer_parent_id_column, 
       $peer_id_column, 
       $criteria, 
+      $root_nodes_criteria,
       $peer_method, 
       $peer_count_method,
       $peer_to_string_method,
@@ -373,11 +374,19 @@ class dc_ajaxActions extends sfActions
 
     $c= clone $criteria;
     if ( $parent_id == null) {
-      $c->addAnd(constant($peer_class.'::'.$peer_parent_id_column), null, Criteria::ISNULL);
+      if (!is_null($root_nodes_criteria))
+      {
+        $c = clone $root_nodes_criteria;
+      }
+      else
+      {
+        $c->addAnd(constant($peer_class.'::'.$peer_parent_id_column), null, Criteria::ISNULL);
+      }
     }
     else {
       $c->addAnd(constant($peer_class.'::'.($related_by_column == null ?$peer_parent_id_column: $related_by_column)), $parent_id);
     }
+    
     return $this->prepareCrJsTreePropelNodes( 
       call_user_func( array( $peer_class, $peer_method), $c), 
       $peer_class,  
@@ -403,6 +412,7 @@ class dc_ajaxActions extends sfActions
         $peer_parent_id_column  = $this->decodeCrJsTreePropel( $request->getParameter('peer_parent_id_column'));
         $peer_id_column         = $this->decodeCrJsTreePropel( $request->getParameter('peer_id_column'));
         $criteria               = unserialize($this->decodeCrJsTreePropel( $request->getParameter('criteria')));
+        $root_nodes_criteria    = unserialize($this->decodeCrJsTreePropel( $request->getParameter('root_nodes_criteria')));
         $peer_method            = $this->decodeCrJsTreePropel( $request->getParameter('peer_method'));
         $peer_count_method      = $this->decodeCrJsTreePropel( $request->getParameter('peer_count_method'));
         $peer_to_string_method  = $this->decodeCrJsTreePropel( $request->getParameter('peer_to_string_method'));
@@ -414,10 +424,10 @@ class dc_ajaxActions extends sfActions
             break;
           case 'get_root':
           default:
-            $id = $request->getParameter('root_node', null);
+            $id = null;
             break;
         }
-        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($id, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $peer_method, $peer_count_method, $peer_to_string_method); 
+        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($id, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $root_nodes_criteria, $peer_method, $peer_count_method, $peer_to_string_method); 
         return $this->renderText( json_encode($nodes));
       }
       else {

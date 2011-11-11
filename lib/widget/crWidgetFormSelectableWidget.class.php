@@ -117,13 +117,15 @@ class crWidgetFormSelectableWidget extends sfWidgetForm {
   protected function getWidgetChanger($name, $value, $attributes, $errors) {
     $ret = '';
     foreach($this->widgets as $k => $w) {
-        $ret.= strtr('<li><a class="%class%" onclick="%js_click_action%">%name%</a></li>', array(
-          '%class%'               =>  $k == $this->getCurrentWidgetKey( $name)?'selected':'',
-          '%js_click_action%'     =>  $this->getJsClickAction($name, $k, $value, $attributes, $errors),
-          '%name%'                =>  $k,
+        $ret.= strtr('<input type="radio" name="%id%" id="%name%" %checked% class="%class%" onclick="%js_click_action%"><label for="%name%">%name%</label>', array(
+          '%class%'               => $k == $this->getCurrentWidgetKey($name) ? 'ui-state-active' : '',
+          '%js_click_action%'     => $this->getJsClickAction($name, $k, $value, $attributes, $errors),
+          '%name%'                => $k,
+          '%id%'                  => 'changer_'.$this->generateId($name),
+          '%checked%'             => $k == $this->getCurrentWidgetKey($name) ? 'checked="checked"' : '',
         ));
     }
-    return sprintf('<ul class="changer">%s</ul>', $ret);
+    return sprintf('<div class="changer">%s</div>', $ret);
   }
 
 
@@ -148,7 +150,7 @@ class crWidgetFormSelectableWidget extends sfWidgetForm {
     $display_container_id = sprintf("%s_display_%s", $this->getPrefix(), $this->generateId($name));
     $widget_container_id  = sprintf("%s_widget_%s", $this->getPrefix(), $this->generateId($name));
     return
-        strtr('<div class="cr_selectable_widget" id="%display_container%">%changer%<div id="%widget_container%">%widget%</div></div>',array(
+        strtr('<div class="cr_selectable_widget" id="%display_container%">%changer%<div id="%widget_container%">%widget%</div></div><script>$(".changer").buttonset()</script>',array(
               '%display_container%' =>  $display_container_id,
               '%changer%'           =>  $this->getWidgetChanger( $name, $value, $attributes, $errors),
               '%widget_container%'  =>  $widget_container_id,
