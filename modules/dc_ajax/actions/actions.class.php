@@ -414,7 +414,7 @@ class dc_ajaxActions extends sfActions
             break;
           case 'get_root':
           default:
-            $id = null;
+            $id = $request->getParameter('root_node', null);
             break;
         }
         $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($id, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $peer_method, $peer_count_method, $peer_to_string_method); 

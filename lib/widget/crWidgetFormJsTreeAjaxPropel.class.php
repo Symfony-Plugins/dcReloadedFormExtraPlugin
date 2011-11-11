@@ -57,6 +57,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
     $this->addOption('peer_method', 'doSelect');
     $this->addOption('peer_count_method', 'doCount'); 
     $this->addOption('peer_to_string_method', '__toString'); 
+    $this->addOption('root_node', null); 
   }
 
  /**
@@ -101,6 +102,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
                 operation: n == -1? "get_root":"get_children",
                 node_id: n == -1? -1 : n.data("id"),
                 peer_class: "%peer_class%",
+                root_node: %root_node%,
                 peer_id_column: "%peer_id_column%",
                 peer_parent_id_column: "%peer_parent_id_column%",
                 criteria: "%criteria%",
@@ -124,6 +126,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
               "%peer_method%"               => $this->encode($this->getOption('peer_method')),
               "%peer_count_method%"         => $this->encode($this->getOption('peer_count_method')),
               "%peer_to_string_method%"     => $this->encode($this->getOption('peer_to_string_method')),
+              "%root_node%"                 => $this->getOption('root_node'),
             ));
   }
 
