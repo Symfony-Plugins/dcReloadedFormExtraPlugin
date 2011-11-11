@@ -117,15 +117,15 @@ class crWidgetFormSelectableWidget extends sfWidgetForm {
   protected function getWidgetChanger($name, $value, $attributes, $errors) {
     $ret = '';
     foreach($this->widgets as $k => $w) {
-        $ret.= strtr('<input type="radio" name="%id%" id="%name%" %checked% class="%class%" onclick="%js_click_action%"><label for="%name%">%name%</label>', array(
-          '%class%'               => $k == $this->getCurrentWidgetKey($name) ? 'ui-state-active' : '',
+        $ret.= strtr('<input type="radio" name="%id%" id="%name%" %checked% onclick="%js_click_action%"><label for="%name%">%label_name%</label>', array(
           '%js_click_action%'     => $this->getJsClickAction($name, $k, $value, $attributes, $errors),
-          '%name%'                => $k,
+          '%name%'                => $this->generateId($name).'_'.$k,
+          '%label_name%'          => $k,
           '%id%'                  => 'changer_'.$this->generateId($name),
           '%checked%'             => $k == $this->getCurrentWidgetKey($name) ? 'checked="checked"' : '',
         ));
     }
-    return sprintf('<div class="changer">%s</div>', $ret);
+    return sprintf('<div class="changer" id="changer_%s">%s</div>', $this->generateId($name), $ret);
   }
 
 
@@ -150,10 +150,11 @@ class crWidgetFormSelectableWidget extends sfWidgetForm {
     $display_container_id = sprintf("%s_display_%s", $this->getPrefix(), $this->generateId($name));
     $widget_container_id  = sprintf("%s_widget_%s", $this->getPrefix(), $this->generateId($name));
     return
-        strtr('<div class="cr_selectable_widget" id="%display_container%">%changer%<div id="%widget_container%">%widget%</div></div><script>$(".changer").buttonset()</script>',array(
+        strtr('<div class="cr_selectable_widget" id="%display_container%">%changer%<div id="%widget_container%">%widget%</div></div><script>$("#changer_%id%").buttonset()</script>',array(
               '%display_container%' =>  $display_container_id,
               '%changer%'           =>  $this->getWidgetChanger( $name, $value, $attributes, $errors),
               '%widget_container%'  =>  $widget_container_id,
+              '%id%'                =>  $this->generateId($name),
               '%widget%'            =>  $this->getCurrentWidget( $name)->render($name, $value, $attributes, $errors) ,
         ));
   }

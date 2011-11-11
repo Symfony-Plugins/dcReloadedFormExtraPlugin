@@ -340,7 +340,7 @@ class dc_ajaxActions extends sfActions
         {
           $new ['state']= 'closed';
         }
-        if ( $get_type_callback != null && is_callable(array($o,$get_type_callback)) ) $new['attr']['type']= call_user_func(array($o,$get_type_callback));
+        if ( $get_type_callback != null) $new['attr']['rel']= call_user_func(array($o,$get_type_callback));
         $ret[]=$new;
     }
     return $ret;
@@ -398,7 +398,8 @@ class dc_ajaxActions extends sfActions
       $criteria, 
       $peer_method, 
       $peer_count_method,
-      $peer_to_string_method
+      $peer_to_string_method,
+      $get_type_callback
     );
   }
 
@@ -431,7 +432,7 @@ class dc_ajaxActions extends sfActions
             $id = null;
             break;
         }
-        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($id, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $root_nodes_criteria, $peer_method, $peer_count_method, $peer_to_string_method, $get_type_callback); 
+        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($id, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $root_nodes_criteria, $peer_method, $peer_count_method, $peer_to_string_method, null, $get_type_callback); 
         
         return $this->renderText( json_encode($nodes));
       }
