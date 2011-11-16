@@ -327,7 +327,9 @@ class dc_ajaxActions extends sfActions
       $peer_method, 
       $peer_count_method,
       $peer_to_string_method,
-      $get_type_callback= null ) {
+      $related_by_column = null, 
+      $get_type_callback = null
+    ) {
     $ret=array();
     $tableMap = call_user_func(array($peer_class, 'getTableMap'));
     foreach ($array as $o)
@@ -341,6 +343,7 @@ class dc_ajaxActions extends sfActions
           $new ['state']= 'closed';
         }
         if ( $get_type_callback != null) $new['attr']['rel']= call_user_func(array($o,$get_type_callback));
+//        $new ['attr']['debug']= var_export(constant($peer_class.'::'.$peer_parent_id_column).'|'.$related_by_column,true);
         $ret[]=$new;
     }
     return $ret;
@@ -389,7 +392,7 @@ class dc_ajaxActions extends sfActions
     else {
       $c->addAnd(constant($peer_class.'::'.($related_by_column == null ?$peer_parent_id_column: $related_by_column)), $parent_id);
     }
-    
+
     return $this->prepareCrJsTreePropelNodes( 
       call_user_func( array( $peer_class, $peer_method), $c), 
       $peer_class,  
@@ -399,6 +402,7 @@ class dc_ajaxActions extends sfActions
       $peer_method, 
       $peer_count_method,
       $peer_to_string_method,
+      $related_by_column,
       $get_type_callback
     );
   }
@@ -456,6 +460,7 @@ class dc_ajaxActions extends sfActions
       $peer_parent_id_column, 
       $peer_id_column, 
       $criteria, 
+      $root_nodes_criteria,
       $peer_method, 
       $peer_count_method,
       $peer_to_string_method, 
@@ -463,23 +468,31 @@ class dc_ajaxActions extends sfActions
       $peer_root_type, 
       $peer_type_relationships) {
 
-    if ($parent_id == null ) {
+    if ($parent_id == null ) 
+    {
     /* in this case we have to get only root_nodes of type specified by $peer_root_type */
-        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$peer_root_type], $peer_parent_id_column[$peer_root_type], $peer_id_column[$peer_root_type], $criteria[$peer_root_type], $peer_method[$peer_root_type], $peer_count_method[$peer_root_type], $peer_to_string_method[$peer_root_type]); 
+        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$peer_root_type], $peer_parent_id_column[$peer_root_type], $peer_id_column[$peer_root_type], $criteria[$peer_root_type], $root_nodes_criteria, $peer_method[$peer_root_type], $peer_count_method[$peer_root_type], $peer_to_string_method[$peer_root_type]); 
+        foreach ($peer_type_relationships[$peer_root_type] as $name => $relationship) 
+        {
+            $node_type = $relationship['related_type'];
+            $nodes = $this->updateCrJsTreeMergeChildrenNodesWithRelated($nodes, $peer_class[$node_type], $relationship['by_column'], $criteria[$node_type], $peer_count_method[$node_type]);
+        }
         return array_map(  create_function('$node','$node["attr"]["rel"]="'.$peer_root_type.'"; return $node;'), $nodes);
     }
-    else { 
+    else 
+    { 
     /* if is not a root node, we have to: first get nodes of same type of calling node */
-        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type], $criteria[$node_type], $peer_method[$node_type], $peer_count_method[$node_type], $peer_to_string_method[$node_type]); 
+        $nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type], $criteria[$node_type], $root_nodes_criteria, $peer_method[$node_type],  $peer_count_method[$node_type], $peer_to_string_method[$node_type]); 
 
         $nodes = array_map(  create_function('$node','$node["attr"]["rel"]="'.$node_type.'"; return $node;'), $nodes);
 
     /* Now we will check if there is a possible relation to get child nodes of different type */
         if ( array_key_exists ($node_type, $peer_type_relationships) ) {
-
+          
           foreach ($peer_type_relationships[$node_type] as $name => $relationship) {
             $node_type = $relationship['related_type'];
-            $related_nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type], $criteria[$node_type], $peer_method[$node_type], $peer_count_method[$node_type], $peer_to_string_method[$node_type], $relationship['by_column']); 
+            $nodes = $this->updateCrJsTreeMergeChildrenNodesWithRelated($nodes, $peer_class[$node_type], $relationship['by_column'], $criteria[$node_type], $peer_count_method[$node_type]);
+            $related_nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type], $criteria[$node_type], null, $peer_method[$node_type], $peer_count_method[$node_type], $peer_to_string_method[$node_type], $relationship['by_column']); 
             $nodes = array_merge ($nodes, array_map(  create_function('$node','$node["attr"]["rel"]="'.$node_type.'"; return $node;'), $related_nodes));
           }
         }
@@ -487,6 +500,25 @@ class dc_ajaxActions extends sfActions
     }
   }
 
+  private function updateCrJsTreeMergeChildrenNodesWithRelated($nodes, $peer_class, $peer_related_column, $criteria, $peer_count_method)
+  {
+    $ret = array();
+    foreach ($nodes as $node)
+    {
+      if ( !isset ($node['state']) )
+      {
+        $related_id = $node['attr']['id'];
+        $c = $criteria == null? new Criteria(): $criteria;
+        $c->add(constant($peer_class.'::'.$peer_related_column), $related_id);
+        if ( call_user_func(array($peer_class, $peer_count_method), $c) > 0 )
+        {
+          $node['state']='closed';
+        }
+      }
+      $ret[]=$node;
+    }
+    return $ret;
+  }
   /* XHR action to retrieve nodes for crJsTreePropelMerge widget */
   public function executeCrJsTreePropelMerge(sfWebRequest $request) {
 
@@ -504,6 +536,7 @@ class dc_ajaxActions extends sfActions
         $peer_types             = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_types'));
         $peer_root_type         = $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_root_type'));
         $peer_type_relationships= $this->decodeCrJsTreePropelMerge( $request->getParameter('peer_type_relationships'));
+        $root_nodes_criteria    = unserialize($this->decodeCrJsTreePropel( $request->getParameter('root_nodes_criteria')));
         $operation              = $request->getParameter('operation');
 
         switch ( $operation ) {
@@ -517,7 +550,7 @@ class dc_ajaxActions extends sfActions
             $node_type = null;
             break;
         }
-        $nodes = $this->getCrJsTreePropelMergeAsOneLevelHierarchy($id,$node_type, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $peer_method, $peer_count_method, $peer_to_string_method, $peer_types, $peer_root_type, $peer_type_relationships); 
+        $nodes = $this->getCrJsTreePropelMergeAsOneLevelHierarchy($id,$node_type, $peer_class, $peer_parent_id_column, $peer_id_column, $criteria, $root_nodes_criteria, $peer_method, $peer_count_method, $peer_to_string_method, $peer_types, $peer_root_type, $peer_type_relationships); 
         return $this->renderText( json_encode($nodes));
       }
       else {

@@ -100,6 +100,11 @@ class crWidgetFormJsTree extends sfWidgetForm {
     $asoc = $this->getOption('tree_node_icons_per_type');
     $not_selectable_types = $this->getOption('not_selectable_types');
     $ret = '';
+    if ( empty($asoc) )
+    {
+      $asoc=array();
+      foreach($not_selectable_types as $v) $asoc[$v]=null;
+    }
     foreach ($asoc as $type=>$icon_img) {
       $ret.= (empty($ret)?'':', ') . sprintf (" %s: { icon: { image: '%s' } ", $type , $icon_img);
       if ( in_array($type, $not_selectable_types)) {
@@ -175,7 +180,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
   protected function getJsTreeOptions( $value) {
     $core = $this->getCoreOptions($value);
     $plugins = $this->getOption('tree_plugins');
-    return strtr("{core: %core%, plugins: %plugins%, json_data: %tree% , themes: { dots: %dots%, icons: %icons% }, ui: { select_limit: 1, initially_select: [ '%value%' ] }, types: { types:  %types%  } }",array(
+    return strtr("{core: %core%, plugins: %plugins%, json_data: %tree% , themes: { dots: %dots%, icons: %icons% }, ui: { select_limit: 1, initially_select: [ '%value%' ], selected_parent_close: false, selected_parent_open: false }, types: { types:  %types%  } }",array(
       '%core%'    => $this->toJson($core),
       '%plugins%' => empty($plugins)?'[ ]':$plugins,
       '%tree%'    => $this->toJson( $this->getTree()),
