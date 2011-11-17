@@ -492,7 +492,12 @@ class dc_ajaxActions extends sfActions
           foreach ($peer_type_relationships[$node_type] as $name => $relationship) {
             $node_type = $relationship['related_type'];
             $nodes = $this->updateCrJsTreeMergeChildrenNodesWithRelated($nodes, $peer_class[$node_type], $relationship['by_column'], $criteria[$node_type], $peer_count_method[$node_type]);
-            $related_nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type], $criteria[$node_type], null, $peer_method[$node_type], $peer_count_method[$node_type], $peer_to_string_method[$node_type], $relationship['by_column']); 
+            $related_root_criteria = clone $criteria[$node_type]; // related child nodes are root nodes the first time. Thats why we need to ask for NULL parent_ids
+            $related_root_criteria->addAnd(constant($peer_class[$node_type].'::'.$peer_parent_id_column[$node_type]), null, Criteria::ISNULL);
+            
+            $related_nodes = $this->getCrJsTreePropelAsOneLevelHierarchy($parent_id, $peer_class[$node_type], $peer_parent_id_column[$node_type], $peer_id_column[$node_type],  $related_root_criteria, null, $peer_method[$node_type], $peer_count_method[$node_type], $peer_to_string_method[$node_type], $relationship['by_column']); 
+            //The following line fixes the count method for child nodes
+            $related_nodes = $this->updateCrJsTreeMergeChildrenNodesWithRelated($related_nodes, $peer_class[$node_type], $peer_parent_id_column[$node_type], $criteria[$node_type], $peer_count_method[$node_type]);
             $nodes = array_merge ($nodes, array_map(  create_function('$node','$node["attr"]["rel"]="'.$node_type.'"; return $node;'), $related_nodes));
           }
         }
