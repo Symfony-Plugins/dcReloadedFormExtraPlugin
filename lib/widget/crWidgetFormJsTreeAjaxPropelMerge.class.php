@@ -124,6 +124,8 @@ class crWidgetFormJsTreeAjaxPropelMerge extends crWidgetFormJsTreeAjaxPropel {
     $this->addRequiredOption('peer_class_value');
     $this->addRequiredOption('peer_root_type');
     $this->addRequiredOption('peer_type_relationships');
+    $this->addOption('show_value_callback', array($options['peer_class_value'],'retrieveByPk'));
+
   }
 
   /* Have to overwite because we try to validate received options

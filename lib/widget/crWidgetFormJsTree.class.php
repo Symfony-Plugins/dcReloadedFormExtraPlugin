@@ -76,6 +76,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
     $this->addOption('tree_node_icons_per_type',  array());
     $this->addOption('not_selectable_types',  array());
     $this->addOption('prefix_tree_node_id', 'change_me');
+    $this->addOption('show_value_callback', false);
   }
 
   /**
@@ -271,10 +272,12 @@ class crWidgetFormJsTree extends sfWidgetForm {
     $display_container_id = sprintf("%s_display_%s", $this->getPrefix(), $this->generateId($name));
     $tree_container_id = sprintf("%s_tree_%s", $this->getPrefix(), $this->generateId($name));
     $hidden = new sfWidgetFormInputHidden();
+    $get_value = $this->getOption('show_value_callback');
     return 
-        strtr('<div>%hidden%<div id="%display_container%" class="treelabel"><span class="label not-found">%text%<span></div><div id="%tree_container%"></div></div>%script%',array(
+        strtr('<div>%hidden%<div id="%display_container%" class="treelabel"><span class="%text_label_class%">%text%<span></div><div id="%tree_container%"></div></div>%script%',array(
               '%display_container%' => $display_container_id,
-              '%text%'              => $value == null? $this->getOption('no_value_text'):'',
+              '%text_label_class%'  => $value == null? 'label not-found': 'label found',
+              '%text%'              => $value == null? $this->getOption('no_value_text'): ( $get_value?call_user_func($get_value,$value):$value),
               '%hidden%'            => $hidden->render($name, $value, $attributes , $errors ),
               '%tree_container%'    => $tree_container_id,
               '%script%'            => $this->getJsScript($this->generateId($name), $value, $tree_container_id, $display_container_id )

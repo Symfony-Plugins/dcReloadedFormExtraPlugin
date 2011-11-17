@@ -60,6 +60,7 @@ class crWidgetFormJsTreeAjaxPropel extends crWidgetFormJsTreeAjax {
     $this->addOption('peer_to_string_method', '__toString'); 
     $this->addOption('root_nodes_criteria', null); 
     $this->addOption('get_type_callback', null); 
+    $this->addOption('show_value_callback', array($options['peer_class'],'retrieveByPk'));
   }
 
  /**
