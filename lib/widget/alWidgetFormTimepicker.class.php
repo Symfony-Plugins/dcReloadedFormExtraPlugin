@@ -207,16 +207,23 @@ class alWidgetFormTimepicker extends sfWidgetForm
 
   /*
    * Required Javascripts for this widget
+   * jQuery
+   * jquery.ui.core
+   * jquery.ui.position
+   * jquery.ui.widget
+   * jquery.ui.tabs
+   * jquery.ui.timepicker.js"
    */
   public function getJavaScripts(){
-    return array_merge(parent::getJavaScripts(),array('/dcReloadedFormExtraPlugin/js/alTimepicker/jquery-latest.js', "/dcReloadedFormExtraPlugin/js/alTimepicker/jquery.ui.core.min.js" , "/dcReloadedFormExtraPlugin/js/alTimepicker/jquery.ui.position.min.js", "/dcReloadedFormExtraPlugin/js/alTimepicker/jquery.ui.widget.min.js", "/dcReloadedFormExtraPlugin/js/alTimepicker/jquery.ui.tabs.min.js","/dcReloadedFormExtraPlugin/js/alTimepicker/jquery.ui.timepicker.js"  ));
+    return array_merge(parent::getJavaScripts(),array("/dcReloadedFormExtraPlugin/js/alTimepicker/jquery.ui.timepicker.js"  ));
   }
 
   /*
    * Required Stylesheets for this widget
+   * jquery.ui => "screen"
    */
   public function getStylesheets(){
-    return array_merge(parent::getStylesheets(),array("/dcReloadedFormExtraPlugin/css/alTimepicker/jquery.ui.custom.css" => "screen","/dcReloadedFormExtraPlugin/css/alTimepicker/jquery.ui.timepicker.css?v=0.2.5" => "screen","/dcReloadedFormExtraPlugin/css/alTimepicker/reset-tables.css" => "screen"));
+    return array_merge(parent::getStylesheets(),array("/dcReloadedFormExtraPlugin/css/alTimepicker/jquery.ui.timepicker.css?v=0.2.5" => "screen","/dcReloadedFormExtraPlugin/css/alTimepicker/reset-tables.css" => "screen"));
   }
 
 
