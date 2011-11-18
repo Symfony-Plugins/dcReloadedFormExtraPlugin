@@ -28,6 +28,7 @@ class pmWidgetFormPropelJQueryTokeninput extends sfWidgetFormPropelChoice
 $('#%id%_tokeninput').tokenInput('%url%', $.extend(
   {},
   {
+    method: 'POST',
     onAdd: function(item)
     {
       $('#%id%').val(item.id);
@@ -85,3 +86,4 @@ EOF;
     ));
   }
 }
+
