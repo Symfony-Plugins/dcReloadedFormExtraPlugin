@@ -78,7 +78,7 @@ class crWidgetFormSelectableWidget extends sfWidgetForm {
   }
 
   protected function getCurrentWidgetKey($name) {
-    $coockie = null;
+    $cookie = null;
     $request = sfContext::hasInstance()? sfContext::getInstance()->getRequest():null;
     if ($request !=null) {
       $cookie = $request->getCookie( $this->getCookieName( $name));
