@@ -10,14 +10,28 @@
  *
  * @author Alvaro F. Lara <alvarofernandolara@gmail.com>
  */
-class alValidatorTimepicker extends sfValidatorString
+class alValidatorTimepicker extends sfValidatorBase
 {
 
   protected function configure($options = array(), $messages = array())
   {
     parent::configure($options, $messages);
+
     $this->addOption('enable_timerange', false);
   }
+
+  /**
+   * Returns true if the value is empty.
+   *
+   * @param  mixed $value  The input value
+   *
+   * @return bool true if the value is empty, false otherwise
+   */
+  protected function isEmpty($value)
+  {
+    return in_array($value, array(null, '-', array()), true);
+  }
+
 
   protected function doClean($value)
   {
@@ -37,16 +51,17 @@ class alValidatorTimepicker extends sfValidatorString
       {
         throw new sfValidatorError($this, 'invalid');
       }
-    }
+    } else {
 
-    if(!is_string($value))
-    {
-      throw new sfValidatorError($this, 'You are using a single validator with a range value widget. Please verify.');
-    }
+      if(!is_string($value))
+      {
+        throw new sfValidatorError($this, 'You are using a single validator with a range value widget. Please verify.');
+      }
 
-    if (!$this->checkSingleHourFormat($value))
-    {
-      throw new sfValidatorError($this, 'invalid');
+      if (!$this->checkSingleHourFormat($value))
+      {
+        throw new sfValidatorError($this, 'invalid');
+      }
     }
 
     return $value;

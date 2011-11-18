@@ -64,10 +64,11 @@ class alWidgetFormTimepicker extends sfWidgetForm
   protected function configure($options = array(), $attributes = array()) {
     parent::configure($options, $attributes);
 
+    sfContext::getInstance()->getConfiguration()->loadHelpers('I18N');
     $this->addOption('config', array());
     $this->addOption('enable_timerange', false);
-    $this->addOption('from_label', 'From:');
-    $this->addOption('to_label', 'To:');
+    $this->addOption('from_label', __('From:'));
+    $this->addOption('to_label', __('To:'));
 
   }
 
@@ -97,7 +98,7 @@ class alWidgetFormTimepicker extends sfWidgetForm
       $value = "-";
     $value = explode('-',$value);
 
-    $ui_widget_conf = array_merge($this->getOption('config'),array('hours' => array('starts' => 0,'ends' => 23),'minutes' => array('starts' => 0,'ends' => 55 , 'interval' => 5)));
+    $ui_widget_conf = $this->getOption('config');
 
     $widget_configuration = array();
     $widget_configuration['name'] = 'fake_'.$name.'[]';
