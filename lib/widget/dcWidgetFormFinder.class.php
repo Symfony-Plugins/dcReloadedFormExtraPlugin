@@ -325,4 +325,28 @@ JAVASCRIPT;
 
     return strval($object);
   }
+  
+  /**
+   * Translates the given text.
+   *
+   * @param  string $text       The text with optional placeholders
+   * @param  array $parameters  The values to replace the placeholders
+   *
+   * @return string             The translated text
+   *
+   * @see sfWidgetFormSchemaFormatter::translate()
+   */
+  protected function translate($text, array $parameters = array())
+  {
+    if (null === $this->parent)
+    {
+      sfContext::getInstance()->getConfiguration()->loadHelpers(array('I18N'));
+      
+      return __($text, $parameters);
+    }
+    else
+    {
+      return $this->parent->getFormFormatter()->translate($text, $parameters);
+    }
+  }
 }
