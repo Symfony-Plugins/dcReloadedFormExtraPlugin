@@ -77,6 +77,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
     $this->addOption('not_selectable_types',  array());
     $this->addOption('prefix_tree_node_id', 'change_me');
     $this->addOption('show_value_callback', false);
+    $this->addOption('theme', 'classic');
   }
 
   /**
@@ -181,7 +182,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
   protected function getJsTreeOptions( $value) {
     $core = $this->getCoreOptions($value);
     $plugins = $this->getOption('tree_plugins');
-    return strtr("{core: %core%, plugins: %plugins%, json_data: %tree% , themes: { dots: %dots%, icons: %icons% }, ui: { select_limit: 1, initially_select: [ '%value%' ], selected_parent_close: false, selected_parent_open: false }, types: { types:  %types%  } }",array(
+    return strtr("{core: %core%, plugins: %plugins%, json_data: %tree% , themes: { theme : '%theme%', dots: %dots%, icons: %icons% }, ui: { select_limit: 1, initially_select: [ '%value%' ], selected_parent_close: false, selected_parent_open: false }, types: { types:  %types%  } }",array(
       '%core%'    => $this->toJson($core),
       '%plugins%' => empty($plugins)?'[ ]':$plugins,
       '%tree%'    => $this->toJson( $this->getTree()),
@@ -189,6 +190,7 @@ class crWidgetFormJsTree extends sfWidgetForm {
       '%icons%'   => $this->toJson($this->getOption('tree_show_icons')),
       '%value%'   => $this->generateNodeId($value), 
       '%types%'   => $this->getJsTreeTypeOptions(),
+      '%theme%'   => $this->getOption('theme'),
     ));
   }
 
