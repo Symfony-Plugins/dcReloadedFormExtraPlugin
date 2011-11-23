@@ -79,7 +79,7 @@ class crWidgetFormSelectableWidget extends sfWidgetForm {
 
   protected function getCurrentWidgetKey($name) {
     $cookie = null;
-    $request = sfContext::hasInstance()? sfContext::getInstance()->getRequest():null;
+    $request = sfContext::hasInstance('frontend')? sfContext::getInstance()->getRequest():null;
     if ($request !=null) {
       $cookie = $request->getCookie( $this->getCookieName( $name));
     }
@@ -102,7 +102,7 @@ class crWidgetFormSelectableWidget extends sfWidgetForm {
       type:   'POST',
       success: function success(data) { 
         jQuery('#%id%').html(data); 
-        jQuery.cookie('%cookie%','%cookie_value%', { expires: %expires% });
+        jQuery.cookie('%cookie%','%cookie_value%', { expires: %expires% , path: '/'});
       }
     })",array(
       '%url%'           =>  $this->getOption('url'),
