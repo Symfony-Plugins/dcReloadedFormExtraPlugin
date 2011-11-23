@@ -1,5 +1,5 @@
 <?php
- /**  
+ /**
   * crWidgetFormJsTreeAjax is a tree select widget extending crWidgetFormJsTree to provide
   * nodes load asynchornously using ajax
   *
@@ -19,7 +19,7 @@ class crWidgetFormJsTreeAjax extends crWidgetFormJsTree {
    *    - node_id: id of node to get children of
    *
    *    Nodes returned by this url action must be in json format, as described in the following exmaple:
-   *    [ 
+   *    [
    *      { data: 'Folder Node name',
    *        attr: { id: 1 , rel: 'folder'},
    *        state: 'closed'
@@ -32,11 +32,11 @@ class crWidgetFormJsTreeAjax extends crWidgetFormJsTree {
    *    trigger an ajax callback.
    *    See also, the rel attribute that will be used to change node properties for folder type nodes
    *
-   *  * get_path_to_node_callback: function to retrieve path up to node as array. Use in forms that set default 
+   *  * get_path_to_node_callback: function to retrieve path up to node as array. Use in forms that set default
    *    value and should be displayed open up to selected node
-   *     
+   *
    * Available options:
-   *  Same as parent class. @see crWidgetFormJsTree. 
+   *  Same as parent class. @see crWidgetFormJsTree.
    *
    * @param array $options     An array of options
    * @param array $attributes  An array of default HTML attributes
@@ -45,11 +45,12 @@ class crWidgetFormJsTreeAjax extends crWidgetFormJsTree {
    */
   protected function configure($options = array(), $attributes = array()) {
     $this->addOption('tree',array());
+    $this->addOption('initially_open', true);
     parent::configure($options, $attributes);
     $this->addRequiredOption('url');
     $this->addRequiredOption('get_path_to_node_callback');
   }
-  
+
  /**
   * Returns needed javascript in order to replace json static tree of crWidgetFormJsTree by
   * an ajax call to a service that provides the json returned output as explained at the begining
@@ -67,7 +68,7 @@ class crWidgetFormJsTreeAjax extends crWidgetFormJsTree {
         ),
     );
   }
-  
+
  /**
   * Core options must be overwritten so we can tell jstree to open nodes in path to selected node
   * This is useful for this widget in an edit context, where a value needs to be displayed.
@@ -76,7 +77,14 @@ class crWidgetFormJsTreeAjax extends crWidgetFormJsTree {
   */
   protected function getCoreOptions($value) {
     $options = $this->getOption('tree_options');
-    $options->initially_open = array_map (array($this, 'generateNodeId'),  $this->getPathUpTo($value));
+    if ($this->getOption('initially_open'))
+    {
+      $options->initially_open = array_map (array($this, 'generateNodeId'),  $this->getPathUpTo($value));
+    }
+    else
+    {
+      $options->initially_open = array();
+    }
     return $options;
   }
 
@@ -96,10 +104,10 @@ class crWidgetFormJsTreeAjax extends crWidgetFormJsTree {
   * @return string
   */
   protected function getJstreeAjaxCallback() {
-    return 'function (n) { 
-            return { 
+    return 'function (n) {
+            return {
                 operation: n == -1? "get_root":"get_children",
-                node_id: n == -1? -1 : n.data("id")  
+                node_id: n == -1? -1 : n.data("id")
                    };
                 }';
   }
@@ -112,18 +120,18 @@ class crWidgetFormJsTreeAjax extends crWidgetFormJsTree {
   */
   protected function getJstreeAjaxSuccessCallback() {
     return sprintf('function (data) { jQuery(data).each(function (i,o){ o.metadata={id: o.attr.id}; o.attr.id="%s_%s_"+ o.attr.id;}); }',
-            $this->getPrefix(), 
-            $this->getOption('prefix_tree_node_id')); 
+            $this->getPrefix(),
+            $this->getOption('prefix_tree_node_id'));
   }
 
  /**
-  * Overwite parent function to add these two callbacks in a valid format. The problem is that json_encode 
+  * Overwite parent function to add these two callbacks in a valid format. The problem is that json_encode
   * breaks javascript function format, because it adds quotes to returned values
   *
   * @return string
   */
   protected function toJson($data) {
-    return strtr(parent::toJson($data), array( 
+    return strtr(parent::toJson($data), array(
       '"#JSTREE_AJAX_CALLBACK#"'  =>  $this->getJstreeAjaxCallback(),
       '"#JSTREE_AJAX_SUCCESS#"'   =>  $this->getJstreeAjaxSuccessCallback()));
   }
