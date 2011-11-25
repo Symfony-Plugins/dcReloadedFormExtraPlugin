@@ -65,11 +65,25 @@ var dcWidgetFormFinder = {
 
       params = jQuery(':input', context).serialize();
 
+/*
       conf.request = jQuery.getJSON(conf.url, params, function(data) {
         dcWidgetFormFinder.update(conf, data);
 
         jQuery(conf.loader).fadeOut(500);
         jQuery(conf.submit).removeAttr('disabled');
+      });
+*/
+      conf.request = jQuery.ajax({
+        url: conf.url, 
+        dataType: 'json',
+        data: params,
+        type: 'POST',
+        success: function(data) {
+          dcWidgetFormFinder.update(conf, data);
+
+          jQuery(conf.loader).fadeOut(500);
+          jQuery(conf.submit).removeAttr('disabled');
+        }
       });
 
       dcWidgetFormFinder.set_conf(this, conf);
