@@ -36,7 +36,7 @@ $('#%id%_tokeninput').tokenInput('%url%', $.extend(
       count = $('#%id%_tokeninput').prev().children('[class^=token-input-token]').length;
 
       $('#%id%').change();
-      
+
       if (count > 1)
       {
         first_child = $('#%id%_tokeninput').prev().children('[class^=token-input-token]').first();
@@ -51,6 +51,7 @@ $('#%id%_tokeninput').tokenInput('%url%', $.extend(
 EOF;
 
     $default_value_template = "$('#%id%_tokeninput').tokenInput('add', { id: %value_id%, name: \"%value_string%\" });";
+
 
     if (!is_null($default_value_template))
     {
@@ -68,7 +69,7 @@ EOF;
       '%name%' => $name,
       '%url%' => url_for($this->getOption('url').'?serialized_widget_options='.base64_encode(serialize($this->getOptions()))),
       '%config%' => $this->getOption('config'),
-      '%default_value_template%' => is_null($value) ? '' : $default_value_template
+      '%default_value_template%' => (is_null($value) || $value == '') ? '' : $default_value_template
     ));
   }
 
