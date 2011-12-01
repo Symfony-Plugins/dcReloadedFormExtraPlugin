@@ -59,7 +59,7 @@ class dcWidgetFormPropelChosenChoice extends sfWidgetFormPropelChoice {
       $attributes['style'] = '; min-width: 300px; max-width: 700px;';
     }
     $html = parent::render($name, $value, $attributes, $errors);
-    $html .= dcWidgetFormChosenChoice::getWidgetInitializationJS($this->generateId($name), $value, $default_text);
+    $html .= dcWidgetFormChosenChoice::getWidgetInitializationJS($this->generateId($name), $value, $default_text, $this->getOption('config'));
     return $html;
   }
 }

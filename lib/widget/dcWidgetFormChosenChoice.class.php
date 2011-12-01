@@ -37,21 +37,26 @@ class dcWidgetFormChosenChoice extends sfWidgetFormChoice {
   {
     $widget->addOption('align_right', false);
     $widget->addOption('default_text', null);
+    $widget->addOption('config', '{}');
   }
 
-  public static function getWidgetInitializationJS($id, $value, $default_text)
+  public static function getWidgetInitializationJS($id, $value, $default_text, $config = null)
   {
     $tpl = <<<EOF
 <script>
-  jQuery(document).ready(function(){
-    jQuery("#%widget_id%").chosen({no_results_text: '%no_results_text%', default_text:'%default_text%'});
+  jQuery(function($) {
+    $('#%widget_id%').chosen($.extend({}, {
+      no_results_text: '%no_results_text%',
+      default_text:'%default_text%'
+    }, %config%));
   });
 </script>
 EOF;
     return strtr($tpl, array(
       "%widget_id%" => $id,
       "%no_results_text%" => sfContext::getInstance()->getI18N()->__("No results match"),
-      "%default_text%" => $default_text
+      "%default_text%" => $default_text,
+      '%config%' => $config ?: '{}',
     ));
   }
 
