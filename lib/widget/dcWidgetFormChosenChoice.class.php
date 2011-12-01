@@ -89,7 +89,7 @@ EOF;
       }
       $attributes['class'] .= ' chzn-select chzn-rtl';
     }
-    if(isset($attributes['style'])){
+    if(!isset($attributes['style'])){
       $attributes['style'] = 'min-width: 300px; max-width: 700px;';
     }
     else{
