@@ -390,7 +390,7 @@ class dc_ajaxActions extends sfActions
       }
     }
     else {
-      $c->addAnd(constant($peer_class.'::'.($related_by_column == null ?$peer_parent_id_column: $related_by_column)), $parent_id);
+      $c->add(constant($peer_class.'::'.($related_by_column == null ?$peer_parent_id_column: $related_by_column)), $parent_id);
     }
 
     return $this->prepareCrJsTreePropelNodes( 
