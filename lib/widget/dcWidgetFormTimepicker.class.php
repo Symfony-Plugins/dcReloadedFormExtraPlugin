@@ -11,7 +11,6 @@ class dcWidgetFormTimepicker extends alWidgetFormTimepicker
   protected function renderSingleWidget($name, $value = null, $attributes = array(), $errors = array())
   {
     $array = explode(' ', $value);
-    $value = end($array);
     return parent::renderSingleWidget($name, end($array), $attributes, $errors);
 
   }

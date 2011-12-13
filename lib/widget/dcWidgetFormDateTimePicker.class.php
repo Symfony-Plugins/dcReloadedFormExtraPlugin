@@ -7,6 +7,15 @@
 class dcWidgetFormDateTimePicker extends sfWidgetFormDateTime
 {
 
+  public function __construct($options = array(), $attributes = array())
+  {
+    $this->addOption('time',array());
+    parent::__construct($options, $attributes);
+
+
+  }
+
+
   /**
    * Returns the date widget.
    *
@@ -22,7 +31,7 @@ class dcWidgetFormDateTimePicker extends sfWidgetFormDateTime
 
   protected function getTimeWidget($attributes = array())
   {
-    return new dcWidgetFormTimepicker();
+    return new dcWidgetFormTimepicker(array('config'=>$this->getOption('time')));
 
   }
 
