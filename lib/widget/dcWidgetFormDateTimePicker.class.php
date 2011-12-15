@@ -25,13 +25,13 @@ class dcWidgetFormDateTimePicker extends sfWidgetFormDateTime
    */
   protected function getDateWidget($attributes = array())
   {
-    return new sfWidgetFormDatePicker($this->getOptionsFor('date'), $this->getAttributesFor('date', $attributes));
+    return new mtWidgetFormInputDate(array_merge(array('use_own_help' => false),$this->getOptionsFor('date'), $this->getAttributesFor('date', $attributes)));
 
   }
 
   protected function getTimeWidget($attributes = array())
   {
-    return new dcWidgetFormTimepicker(array('config'=>$this->getOption('time')));
+    return new dcWidgetFormTimepicker(array_merge(array('config'=>$this->getOption('time')), $this->getOptionsFor('time')),$this->getAttributesFor('time', $attributes));
 
   }
 
@@ -45,6 +45,21 @@ class dcWidgetFormDateTimePicker extends sfWidgetFormDateTime
   {
     return array_merge(parent::getStylesheets(), array("/dcReloadedFormExtraPlugin/css/alTimepicker/jquery.ui.timepicker.css?v=0.2.5" => "screen", "/dcReloadedFormExtraPlugin/css/alTimepicker/reset-tables.css" => "screen"));
 
+  }
+
+  function render($name, $value = null, $attributes = array(), $errors = array())
+  {
+    $date = $this->getDateWidget($attributes)->render($name.'[date]', $value);
+
+    if (!$this->getOption('with_time'))
+    {
+      return $date;
+    }
+
+    return strtr($this->getOption('format'), array(
+      '%date%' => $date,
+      '%time%' => $this->getTimeWidget($attributes)->render($name.'[time]', $value),
+    ));
   }
 
 }
