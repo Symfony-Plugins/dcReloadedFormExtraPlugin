@@ -9,15 +9,15 @@ function pmWidgetFormJQuerySearch()
   this.deselect_image = "";
   this.serialized_options = "";
   this.js_var_name = "";
-    
+
   this.search = function(page)
   {
     page = typeof(page) != 'undefined' ? page : 0;
-    
+
     value = jQuery(this.search_widget_id).val();
-    
+
     var instance = this;
-  
+
     jQuery.ajax({
       url: this.url,
       type: "POST",
@@ -35,22 +35,24 @@ function pmWidgetFormJQuerySearch()
       }
     });
   };
-  
+
   this.select = function(value, text)
   {
     jQuery(this.hidden_widget_id).val(value);
+    jQuery(this.hidden_widget_id).change();
     jQuery(this.preview_div_id).html(text);
     jQuery(this.update_div_id).hide();
-    
+
     this.getDeselectLink();
   };
-  
+
   this.deselect = function()
   {
     jQuery(eval(this.js_var_name+".hidden_widget_id")).val("");
-  	jQuery(eval(this.js_var_name+".preview_div_id")).html("");
+    jQuery(eval(this.js_var_name+".hidden_widget_id")).change();
+    jQuery(eval(this.js_var_name+".preview_div_id")).html("");
   };
-  
+
   this.getSelectLink = function(value, text)
   {
     // commented out because we may want to select something with an string as the id
@@ -63,11 +65,11 @@ function pmWidgetFormJQuerySearch()
     	})
     	.prependTo(jQuery("#result_"+value));
   }
-  
+
   this.getDeselectLink = function()
   {
     var instance = this;
-  
+
     jQuery("<a><img src='"+this.deselect_image+"'/></a>")
   	  .click(function()
   	  {
@@ -75,7 +77,7 @@ function pmWidgetFormJQuerySearch()
   	  })
   		.appendTo(jQuery(this.preview_div_id));
   }
-  
+
   this.displayNoResultsFoundLabel = function()
   {
     jQuery("<div>"+eval(this.js_var_name+".no_results_found_label")+"</div>").appendTo(jQuery(eval(this.js_var_name+".update_div_id")));
