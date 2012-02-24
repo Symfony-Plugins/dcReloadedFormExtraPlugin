@@ -61,6 +61,7 @@ class dcWidgetFormJQueryDependence extends sfWidgetForm
     $this->addOption('loading_image',image_tag('/dcReloadedFormExtraPlugin/images/ajax-loader.gif',array('class'=>'ajax-loader-image', 'alt_title'=>'loading')));
     $this->addOption('no_value_text','Please select a dependant value to update');
     $this->addOption('or_null', false);
+    $this->addOption('check_all_values_before_render_widget', false);
   }
 
   /**
@@ -93,18 +94,30 @@ class dcWidgetFormJQueryDependence extends sfWidgetForm
   public function renderAfterUpdate($dependant_values)
   {
     $render_widget=false;
+    $first = true;
     foreach ($dependant_values as $key=>$value)
     {
       if (!in_array($key, $this->getOption('observed_boolean_ids'))
           && (!empty($value) || in_array($key, $this->getOption('observed_can_be_empty_ids'))))
       {
-        $render_widget=true; break;
+        $render_widget=($render_widget || $first) && true;
+        $first = false;
+        if (!$this->getOption('check_all_values_before_render_widget'))
+        {
+          break;
+        }
+      }
+      else
+      {
+        $first = $render_widget = false;
       }
     }
+
     if ($render_widget || $this->getOption('or_null'))
     {
       call_user_func($this->getOption('on_change'),$this,$dependant_values);
     }
+
     return (
       ($render_widget || $this->getOption('or_null'))?
         $this->getOption('widget')->render($this->myname,$this->myvalue, $this->myattributes, $this->myerrors):
