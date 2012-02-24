@@ -95,14 +95,16 @@ class dcWidgetFormJQueryDependence extends sfWidgetForm
     $render_widget=false;
     foreach ($dependant_values as $key=>$value)
     {
-      if (!in_array($key,$this->getOption('observed_boolean_ids'))
+      if (!in_array($key, $this->getOption('observed_boolean_ids'))
           && (!empty($value) || in_array($key, $this->getOption('observed_can_be_empty_ids'))))
       {
-        $render_widget=true;
-        break;
+        $render_widget=true; break;
       }
     }
-    call_user_func($this->getOption('on_change'),$this,$dependant_values);
+    if ($render_widget || $this->getOption('or_null'))
+    {
+      call_user_func($this->getOption('on_change'),$this,$dependant_values);
+    }
     return (
       ($render_widget || $this->getOption('or_null'))?
         $this->getOption('widget')->render($this->myname,$this->myvalue, $this->myattributes, $this->myerrors):
