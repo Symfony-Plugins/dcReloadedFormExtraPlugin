@@ -47,9 +47,22 @@ class dcWidgetFormDateTimePicker extends sfWidgetFormDateTime
 
   }
 
-  function render($name, $value = null, $attributes = array(), $errors = array())
+  public function render($name, $value = null, $attributes = array(), $errors = array())
   {
-    $date = $this->getDateWidget($attributes)->render($name.'[date]', $value);
+    $date_value = $time_value = $value;
+    
+    if(is_array($value))
+    {
+      if(isset($value['date']))
+      {
+        $date_value = $value['date'];
+      }
+      if(isset($value['time']))
+      {
+        $time_value = $value['time'];
+      }
+    }
+    $date = $this->getDateWidget($attributes)->render($name.'[date]', $date_value);
 
     if (!$this->getOption('with_time'))
     {
@@ -58,7 +71,7 @@ class dcWidgetFormDateTimePicker extends sfWidgetFormDateTime
 
     return strtr($this->getOption('format'), array(
       '%date%' => $date,
-      '%time%' => $this->getTimeWidget($attributes)->render($name.'[time]', $value),
+      '%time%' => $this->getTimeWidget($attributes)->render($name.'[time]', $time_value),
     ));
   }
 
