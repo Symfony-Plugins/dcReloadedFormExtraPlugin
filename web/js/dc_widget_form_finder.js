@@ -128,7 +128,7 @@ var dcWidgetFormFinder = {
         jQuery(conf.selection).append(del);
         jQuery(conf.selection).append('<br/>');
 
-        $this.fadeOut(500);
+        $this.closest('.document_finder_result_item_container').fadeOut(500);
       }
     }
     else
